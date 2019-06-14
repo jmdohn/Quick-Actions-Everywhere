@@ -6,7 +6,7 @@
         if(quickAction.layoutComponents[0].details.type === "boolean"){
             component.set("v.options", [{"label" : "True", "value" : "true"}, {"label" : "False", "value" : "false"}]);
         }
-        console.log(quickAction.layoutComponents[0].details.name);
+        //console.log(quickAction.layoutComponents[0].details.name);
         if(quickAction.layoutComponents[0].details.name === 'IsReminderSet' && quickActionObjectType === 'Task'){
             helper.setReminderDate(component, helper);
         }
@@ -38,7 +38,7 @@
                         }
                     }
                 });
-                console.log(countries);
+                //console.log(countries);
                 var finalCountries = [];
                 var provinceOptions = [];
                 countriesList.forEach(function(country, index){
@@ -66,7 +66,7 @@
     setReminderTime : function(component, event, helper){
         var quickAction = component.get("v.quickActionField");
         var time = component.find("ReminderDateTime");      
-        console.log(time.get("v.value"));
+        //console.log(time.get("v.value"));
         quickAction.layoutComponents[0].details.reminderDateTime = time.get("v.value");
         helper.handleUpdateRecord(component, "ReminderDateTime", time.get("v.value"), null);
         component.set("v.quickActionField", quickAction);
@@ -101,7 +101,7 @@
         var error = $A.get("$Label.c.qae_hasError");
         if(requiredFields !== undefined && requiredFields.length > 0){
             if(quickAction.layoutComponents[0].details.type !== undefined && quickAction.layoutComponents[0].details.type == 'reference'){
-                console.log('reference');
+                //console.log('reference');
                 if(requiredFields.indexOf(quickAction.layoutComponents[0].details.name) > -1 && (quickAction.layoutComponents[0].details.value === undefined || quickAction.layoutComponents[0].details.value === null)){
                     field.set("v.showError", true);
                 } else {
@@ -110,7 +110,7 @@
             } else if(quickAction.layoutComponents[0].components !== undefined){
                 field.checkValidity();
             } else if(quickAction.layoutComponents[0].details.extraTypeInfo === 'richtextarea') {
-                console.log(quickAction.layoutComponents[0].details.extraTypeInfo);
+                //console.log(quickAction.layoutComponents[0].details.extraTypeInfo);
                 helper.checkRichText(component, quickAction);
             } else if(quickAction.layoutComponents[0].details.type === 'picklist' || quickAction.layoutComponents[0].details.extraTypeInfo === 'textarea'){
                 field.checkValidity();

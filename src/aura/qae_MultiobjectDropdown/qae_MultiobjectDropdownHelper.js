@@ -24,7 +24,7 @@
             });
             multiObjectsList.push(thisVal);
         });
-        console.log(multiObjectsList);
+        //console.log(multiObjectsList);
         component.set("v.multiObjectsList", multiObjectsList);
     }
 })

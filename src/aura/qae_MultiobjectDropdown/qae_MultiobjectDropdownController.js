@@ -6,7 +6,7 @@
         
 	},
     setSelected : function(component, event, helper){
-        console.log('Selected Object => ' + event.currentTarget.id);
+        //console.log('Selected Object => ' + event.currentTarget.id);
         var selectedObject = event.currentTarget.id;
         component.set("v.selectedObject", selectedObject);
         helper.setSelectedObject(component, selectedObject);

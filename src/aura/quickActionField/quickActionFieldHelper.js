@@ -4,26 +4,26 @@
         var quickAction = component.get("v.quickActionField");
         var userPreferences = component.get("c.retrieveUserTaskPreferences");
         userPreferences.setParams({"preferenceType" : quickActionObjectType});
-        console.log("preferenceType" )
+        //console.log("preferenceType" )
         var userPreferencesPromise = helper.executeAction(component, userPreferences);
         userPreferencesPromise.then(
             $A.getCallback(function(result){
                 if(result != undefined){
                     var userPreferenceResult = JSON.parse(result);
-                    console.log('userPreferenceResult ', userPreferenceResult);
+                    //console.log('userPreferenceResult ', userPreferenceResult);
                     if(userPreferenceResult.result !== undefined && userPreferenceResult.result[0] !== undefined){
                         var today = new Date();
                         if(quickActionObjectType === "Task"){
                             var time = userPreferenceResult.result[0].Value / 60;
                             // clean the date
                             var cleanDate = new Date(today.getFullYear(), today.getMonth(), today.getDate(), Math.floor(time), (time % 1)*60, 0, 0);
-                            console.log("before change", cleanDate);
+                            //console.log("before change", cleanDate);
                             // Check if it's less than today
                             if(cleanDate < today){
                                 cleanDate.setDate(today.getDate() + 1);
                             }
                             quickAction.layoutComponents[0].details.reminderDateTime = cleanDate.toISOString();
-                            console.log("after change", cleanDate.toISOString());
+                            //console.log("after change", cleanDate.toISOString());
                             component.set("v.quickActionField", quickAction);
                         } 
                     }  
@@ -37,7 +37,7 @@
     setSearchLabel : function(component, helper){
         var quickAction = component.get("v.quickActionField");
         var quickActionObjectType = component.get("v.quickActionObjectType");
-        console.log("Begin search for field label", quickAction.layoutComponents[0].details.name, quickAction.layoutComponents[0].details.value);
+        //console.log("Begin search for field label", quickAction.layoutComponents[0].details.name, quickAction.layoutComponents[0].details.value);
         if(!quickAction.layoutComponents[0].details.hasOwnProperty("searchReferenceTo")){
             if(quickAction.layoutComponents[0].details.name === "OwnerId" &&  quickActionObjectType === "Event"){  // If this isn't set to user, then an error will occur, since calendars are not searchable
                quickAction.layoutComponents[0].details.searchReferenceTo = "User";
@@ -73,9 +73,9 @@
         if(quickAction.layoutComponents[0].details.hasOwnProperty("referenceTo")){
             var iconFound = false;
             quickAction.layoutComponents[0].details.referenceTo.forEach(function(key){
-                console.log('SearchReferenceTo', key); 
+                //console.log('SearchReferenceTo', key); 
                 if(icons.hasOwnProperty(key)){
-                    console.log(icons[key]);
+                    //console.log(icons[key]);
                     var currIcon = icons[key];
                     if(quickAction.layoutComponents[0].details.hasOwnProperty("value") && quickAction.layoutComponents[0].details.value !== null){
                         var objPrefix = quickAction.layoutComponents[0].details.value.substring(0, 3);
@@ -97,7 +97,7 @@
                 component.set("v.selectedObjectLabel", multiObjects[firstObject].label);
             }
             if(Object.keys(multiObjects).length>1){
-                console.log("multiObjects", multiObjects);
+                //console.log("multiObjects", multiObjects);
                 component.set("v.multiObjects", multiObjects); 
             }
         }
@@ -140,7 +140,7 @@
 	},
     checkRichText : function(component, quickAction){
         var value = quickAction.layoutComponents[0].details.value;
-        console.log(quickAction.layoutComponents[0].details.value);
+        //console.log(quickAction.layoutComponents[0].details.value);
         if(quickAction.required && (value  === undefined || value  === null || value  === "" )){
             component.set("v.valid", false);
         } else{

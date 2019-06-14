@@ -22,7 +22,7 @@
         if(selectedRecords.length > 0){
             component.set("v.recordId", selectedRecords[0].Id);
             component.set("v.showNext", true);
-            console.log(selectedRecords[0].Id);
+            //console.log(selectedRecords[0].Id);
             helper.initialize(component, event, helper);
         } else {
             var vfOrigin = "https://" + component.get("v.vfHost");
@@ -41,11 +41,11 @@
     flowStatusChange : function(component, event, helper){
         var outputVariables = event.getParam("outputVariables");
         component.set("v.action", "flow");
-        console.log(outputVariables);
+        //console.log(outputVariables);
         var redirectVariable = "";
         for(var i = 0; i < outputVariables.length; i++) {
             if(outputVariables[i].name === "recordId") {
-                console.log(outputVariables[i]);
+                //console.log(outputVariables[i]);
                 redirectVariable = outputVariables[i].value;
                 break;
             }
@@ -64,7 +64,7 @@
             record[key] = (values[key] === undefined ? null : values[key]);
         });
         
-        console.log(JSON.stringify(record));
+        //console.log(JSON.stringify(record));
         component.set("v.record", record);
     },
     changeSelection : function(component, event, helper){
@@ -78,8 +78,8 @@
         } else{
             selectedRecords.remove(values);
         }
-        console.log(id);
-        console.log(JSON.stringify(selectedRecords));
+        //console.log(id);
+        //console.log(JSON.stringify(selectedRecords));
         component.set("v.selectedRecords", selectedRecords);
     }
 })

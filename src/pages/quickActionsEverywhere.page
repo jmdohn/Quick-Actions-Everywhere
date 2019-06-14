@@ -133,7 +133,7 @@
             }, false);
             
             $Lightning.use("c:quickActionsEverywhere_LO", function() {
-                $Lightning.createComponent("qae:quickActionsEverywhere",
+                $Lightning.createComponent("c:quickActionsEverywhere",
                                            {"vfHost" : lexOrigin, 
                                             "recordId" : '{!$CurrentPage.parameters.recordId}',
                                             "relatedId" : '{!$CurrentPage.parameters.relatedId}',

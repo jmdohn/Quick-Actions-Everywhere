@@ -1,6 +1,6 @@
 ({
     search: function(component, helper, searchTerm){
-        console.log("--- Begin search ---");
+        //console.log("--- Begin search ---");
         var searchController = component.get("c.performSearch");
         var objectToSearch = component.get("v.selectedObject");
         var fieldsToGet = component.get("v.primaryField");
@@ -28,7 +28,7 @@
             multiObjects[objectToSearch]["primaryField"] = "Name";
             fieldsToGet = "Name";
             component.set("v.primaryField", "Name");
-            console.log(fieldsToGet);
+            //console.log(fieldsToGet);
         }
         fieldsToGet += "," + "Id";
         var searchSize = component.get("v.searchSize");
@@ -39,11 +39,11 @@
                 var searchTerm = component.get("v.searchTerm");
                 if(searchTerm.length > 2){
                     var res; 
-                    console.log(result);
+                    //console.log(result);
                     if(result !== undefined){
                         res = JSON.parse(result);
                         if(res[0] !== undefined){
-                            console.log(res[0]);
+                            //console.log(res[0]);
                             var primaryField = component.get("v.primaryField");
                             var secondaryFields = component.get("v.secondaryFields");
                             var secondaryFieldList = [];
@@ -55,19 +55,19 @@
                             res.forEach(function(key){
                                 var secondaryValueList = [];
                                 var finalResult = {};
-                                console.log(key);
+                                //console.log(key);
                                 finalResult.id = key.Id;
                                 finalResult.primaryField = key[primaryField];                                
-                                console.log("Primary field", primaryField, key[primaryField]);
-                                console.log("secondaryFieldList", secondaryFieldList);
+                                //console.log("Primary field", primaryField, key[primaryField]);
+                                //console.log("secondaryFieldList", secondaryFieldList);
                                 for(var i =0; i < secondaryFieldList.length; i++){
-                                    console.log(secondaryFieldList[i], key.hasOwnProperty(secondaryFieldList[i]));
+                                    //console.log(secondaryFieldList[i], key.hasOwnProperty(secondaryFieldList[i]));
                                     if(secondaryFieldList[i].indexOf(".") > -1){
 										var splitList = secondaryFieldList[i].split(".");
-                                        console.log(splitList);
+                                        //console.log(splitList);
                                         var keyVal = key;
                                         splitList.forEach(function(val, index){
-                                            console.log("Inside splitList function",val, keyVal.hasOwnProperty(val), index === (splitList.length-1));
+                                            //console.log("Inside splitList function",val, keyVal.hasOwnProperty(val), index === (splitList.length-1));
                                             if(keyVal !== undefined && keyVal.hasOwnProperty(val)){
                                                 keyVal = keyVal[val];
                                             } else{
@@ -81,15 +81,15 @@
                                         secondaryValueList.push(key[secondaryFieldList[i]]);
                                     }
                                 }
-                                console.log("secordaryFields and values", secondaryFields, secondaryValueList);
+                                //console.log("secordaryFields and values", secondaryFields, secondaryValueList);
                                 if(secondaryValueList.length > 0){
                                     finalResult.secondaryFields = secondaryValueList.join(" • ");
                                 }
                                 
                                 finalResultList.push(finalResult);                         
-                                console.log("finalResult", finalResult);
+                                //console.log("finalResult", finalResult);
                             });
-                            console.log("searchResults", finalResultList);
+                            //console.log("searchResults", finalResultList);
                             component.set("v.searchResults", finalResultList);
                             if(finalResultList.length === 0){
                                 component.set("v.searchNoResults", true); 
@@ -122,7 +122,7 @@
                 $A.getCallback(function(result){
                     var res;
                     res = JSON.parse(result);
-                    console.log(res);
+                    //console.log(res);
                     component.set("v.primaryField", res[0].searchColumns[0].name);
                     var secondaryFields = "";
                     if(res[0].searchColumns[1] !== undefined){
@@ -131,7 +131,7 @@
                     if(res[0].searchColumns[2] !== undefined){
                        secondaryFields += "," + res[0].searchColumns[2].name; 
                     }
-                    console.log('secondaryFields', secondaryFields);
+                    //console.log('secondaryFields', secondaryFields);
                     component.set("v.secondaryFields", secondaryFields);
                     window.DataCache.setData("qae_SearchLayout-" + selectedObject, res);
                 }),
@@ -149,7 +149,7 @@
             if(searchLayout[0].searchColumns[2] !== undefined){
                 secondaryFields += "," + searchLayout[0].searchColumns[2].name; 
             }
-            console.log('secondaryFields', secondaryFields);
+            //console.log('secondaryFields', secondaryFields);
             component.set("v.secondaryFields", secondaryFields);
         }
         

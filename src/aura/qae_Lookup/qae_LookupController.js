@@ -4,7 +4,7 @@
 		var searchTerm = event.currentTarget.value;
         if(searchTerm !== undefined){
             component.set("v.searchTerm", searchTerm);
-            console.log(searchTerm);
+            //console.log(searchTerm);
             if(searchTerm.length > 2){
                 helper.search(component, helper, searchTerm); 
             } else{
@@ -15,7 +15,7 @@
     },
     setSelected : function(component, event, helper){
         var currentTarget = event.currentTarget;
-        console.log(currentTarget.id);
+        //console.log(currentTarget.id);
         if(currentTarget.id !== undefined){
             component.set("v.selectedId", currentTarget.id);
             var ele = document.getElementById(currentTarget.id);
@@ -31,7 +31,7 @@
     },
     multiObjectChange : function(component, event, helper) {
 		var selectedObject = component.get("v.selectedObject");
-        console.log(selectedObject);
+        //console.log(selectedObject);
         if(selectedObject !== undefined && selectedObject !== null){
            helper.setSelectedObject(component, selectedObject, helper);
         }

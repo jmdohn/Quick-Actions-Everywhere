@@ -9,7 +9,7 @@
         if(relatedId === undefined && recordId !== undefined){
         	component.set("v.relatedId", recordId);
         }        
-        console.log("Related Id", component.get("v.relatedId"));
+        //console.log("Related Id", component.get("v.relatedId"));
 		
         if(flowDevName === ""){
             // Get the quick action
@@ -22,11 +22,11 @@
                 $A.getCallback(function(result){
                     if(result !== undefined){
                         quickAction = JSON.parse(result)[0];
-                        console.log("Result", quickAction);
-                        console.log("quickaction type", quickAction.type);
+                        //console.log("Result", quickAction);
+                        //console.log("quickaction type", quickAction.type);
                         
                         if(quickAction.type === "Create" || quickAction.type === "Update"){
-                            var record = component.set("v.record", {"attributes" : {"type" : quickAction.targetSobjectType}});
+                            component.set("v.record", {"attributes" : {"type" : quickAction.targetSobjectType}});
                         } 
                         
                         if(quickAction.type !== "LightningComponent" && quickAction.type !== "VisualforcePage"){
@@ -34,7 +34,7 @@
                             // nor will we need the object labels
                             var icons = window.DataCache.getData("qae_icons");
                             if(icons){
-                                console.log("Icons retrieved from custom cache");
+                                //console.log("Icons retrieved from custom cache");
                             } else{
                                 helper.getIcons(component, helper);
                                 helper.schemaDescribe(component, helper, quickAction);
@@ -47,7 +47,7 @@
                                 recordTypeAvailablePromise.then(
                                     $A.getCallback(function(result){
                                         component.set("v.recordTypeAvailable", result);
-                                        console.log("record type available", result);
+                                        //console.log("record type available", result);
                                     }),
                                     $A.getCallback(function(error){
                                         console.warn(error);
@@ -57,7 +57,7 @@
                             }
                             
                             var objectDescribe = component.get("c.describeSobjects");
-                            console.log(quickAction.targetSobjectType);
+                            //console.log(quickAction.targetSobjectType);
                             objectDescribe.setParams({"objList" : [quickAction.targetSobjectType], "includeFields" : true});
                             var objectDescribePromise = helper.executeAction(component, objectDescribe);
                             return objectDescribePromise;
@@ -83,7 +83,7 @@
                     var requiredFields = [];
                     if(result !== undefined){
                         describeResult = JSON.parse(result);
-                        console.log('describeResult', describeResult);
+                        //console.log('describeResult', describeResult);
                         component.set("v.objectLabel", describeResult[quickAction.targetSobjectType].label);
                         for(var i = 0; i < quickAction.layout.layoutRows.length; i++){
                             var layoutRow = quickAction.layout.layoutRows[i];
@@ -91,10 +91,10 @@
                                 var layoutItem = layoutRow.layoutItems[c];
                                 for(var q = 0; q < layoutItem.layoutComponents.length; q++){
                                     var cmp = layoutItem.layoutComponents[q];
-                                    console.log(cmp);
+                                    //console.log(cmp);
 
                                     if(cmp.hasOwnProperty("details") && !cmp.hasOwnProperty("components")){
-                                        console.log(describeResult[quickAction.targetSobjectType].fields, cmp.details.name, describeResult[quickAction.targetSobjectType].fields[cmp.details.name]);
+                                        //console.log(describeResult[quickAction.targetSobjectType].fields, cmp.details.name, describeResult[quickAction.targetSobjectType].fields[cmp.details.name]);
                                         cmp.details.accessible = describeResult[quickAction.targetSobjectType].fields[cmp.details.name].accessible;
                                         cmp.details.createable = describeResult[quickAction.targetSobjectType].fields[cmp.details.name].createable;
                                         cmp.details.updateable = describeResult[quickAction.targetSobjectType].fields[cmp.details.name].updateable;
@@ -112,7 +112,7 @@
                                         var updateAccess = true;
                                         var nameRequired = false;
                                         cmp.components.forEach(function(field){
-                                            console.log(field);
+                                            //console.log(field);
                                             if(!describeResult[quickAction.targetSobjectType].fields[field.details.name].accessible){
                                                 allowedAccess = false;
                                             } 
@@ -146,8 +146,8 @@
                                 }
                             }
                         }
-                        console.log("fields", fields);
-                        console.log("requiredFields", requiredFields);
+                        //console.log("fields", fields);
+                        //console.log("requiredFields", requiredFields);
                         component.set("v.requiredFields", requiredFields);
                         var type = component.get("v.type");
                         var selectedRecords = component.get("v.selectedRecords");
@@ -159,7 +159,7 @@
                                 $A.getCallback(function(result){
                                     var thisRecord = null;
                                     if(result !== undefined){
-                                        console.log(result);
+                                        //console.log(result);
                                         var queryResult = JSON.parse(result);
                                         thisRecord = queryResult.result[0];
                                         helper.parseDefaultValues(component, helper, quickAction, thisRecord);
@@ -203,7 +203,7 @@
         }  
     },
     schemaDescribe : function(component, helper, quickAction){
-        console.log('Enter schema describe');
+        //console.log('Enter schema describe');
         var referenceTo = {};
         var keyPrefix = {};
         var describeList = [];
@@ -213,7 +213,7 @@
                 var layoutItem = layoutRow.layoutItems[c];
                 for(var q = 0; q < layoutItem.layoutComponents.length; q++){
                     var cmp = layoutItem.layoutComponents[q];
-                    console.log(cmp);
+                    //console.log(cmp);
                     
                     if(cmp.hasOwnProperty("details") && cmp.details.referenceTo.length > 0){
                         cmp.details.referenceTo.forEach(function(ref){
@@ -235,15 +235,15 @@
                 var describeResult;
                 if(result !== undefined){
                     describeResult = JSON.parse(result);
-                    console.log(describeResult);
+                    //console.log(describeResult);
                     Object.keys(describeResult).forEach(function(key){
                         if(!referenceTo.hasOwnProperty(key)){
                             referenceTo[key] = {"label" : describeResult[key].label};
                             keyPrefix[describeResult[key].keyPrefix] = {"object" : key};
                         } 
                     });
-                    console.log('Object Keys', referenceTo);
-                    console.log('Prefixes', keyPrefix);
+                    //console.log('Object Keys', referenceTo);
+                    //console.log('Prefixes', keyPrefix);
                     window.DataCache.setData("qae_objectKeys", referenceTo);
                     window.DataCache.setData("qae_Keyprefix", keyPrefix);                                         
                 }
@@ -252,7 +252,7 @@
             })
         )
         // End describe 
-        console.log('Exit schema describe');
+        //console.log('Exit schema describe');
     },
     sendToVF : function(component, event, helper, redirectValue, redirectAction){
         /*
@@ -265,9 +265,16 @@
         var vfOrigin = "https://" + component.get("v.vfHost");
         var vfHost = component.get("v.vfHost");
         var selectedRecords = component.get("v.selectedRecords");
+        var quickAction = component.get("v.quickAction");
+        var quickActionType;
+        if(quickAction !== undefined && quickAction !== null && quickAction.type !== undefined && quickAction.type !== null){
+            quickActionType = quickAction.type;
+        } else{
+            quickActionType = "flow";
+        }
         if(vfHost !== undefined){
-            var message = {"action" : component.get("v.action"), "redirectValue" : redirectValue, "data" : component.get("v.record"), "redirectAction" : redirectAction, "quickActionType" : component.get("v.quickAction").type, "selectedRecordsLength" : selectedRecords.length};
-			window.postMessage(JSON.stringify(message), vfOrigin);      
+            var message = {"action" : component.get("v.action"), "redirectValue" : redirectValue, "data" : component.get("v.record"), "redirectAction" : redirectAction, "quickActionType" : quickActionType, "selectedRecordsLength" : selectedRecords.length};
+            window.postMessage(JSON.stringify(message), vfOrigin);      
             if(selectedRecords.length > 0){
                 var newSelectedRecords = selectedRecords.slice(1);
                 if(newSelectedRecords.length > 0){
@@ -296,9 +303,9 @@
         var vfHost = component.get("v.vfHost");
         saveRecordActionPromise.then(
             $A.getCallback(function(result){
-                console.log('Saved result');
-                console.log(result);
-                console.log(JSON.parse(result));
+                //console.log('Saved result');
+                //console.log(result);
+                //console.log(JSON.parse(result));
                 var res = JSON.parse(result);
                 if(res.hasOwnProperty("saveResult") && res.saveResult !== null){
                     resultRecord = res.saveResult[0].id;
@@ -377,13 +384,13 @@
         var parseDefaultValuesPromise = helper.executeAction(component, parseDefaultValues);
         var defaultValues;
         if(thisRecord === null){
-           thisRecord = component.get("v.record");
+           thisRecord = {"attributes" : {"type" : quickAction.targetSobjectType}};
         }
         parseDefaultValuesPromise.then(
             $A.getCallback(function(result){
-                console.log('Start parse default values');
+                //console.log('Start parse default values');
                 defaultValues = JSON.parse(result);
-                console.log("defaultValues", defaultValues, "thisRecord", thisRecord);
+                //console.log("defaultValues", defaultValues, "thisRecord", thisRecord);
 
                 for(var i = 0; i < quickAction.layout.layoutRows.length; i++){
                     var layoutRow = quickAction.layout.layoutRows[i];
@@ -392,8 +399,8 @@
                         for(var q = 0; q < layoutItem.layoutComponents.length; q++){
                             var cmp = layoutItem.layoutComponents[q];
                             if(defaultValues.hasOwnProperty(cmp.value)){
-                                var value = (thisRecord[cmp.details.name] == undefined ? defaultValues[cmp.value] : thisRecord[cmp.details.name]);
-                                console.log(value);
+                                var value = (thisRecord!== null && thisRecord[cmp.details.name] == undefined ? defaultValues[cmp.value] : thisRecord[cmp.details.name]);
+                                //console.log(value);
                                 if(cmp.details.type ==='reference'){
                                     if(cmp.details.name === relatedField){
                                         cmp.details.value = relatedId;
@@ -417,7 +424,7 @@
                 component.set("v.record", thisRecord);
                 component.set("v.loading", false);
                 component.set("v.quickAction", quickAction);
-                console.log('Exit parse default values');
+                //console.log('Exit parse default values');
             }),
             $A.getCallback(function(error){
                 console.warn(error);
@@ -425,14 +432,14 @@
         )
     },
     getIcons : function(component, helper){
-        console.log('Enter get icons');
+        //console.log('Enter get icons');
         var iconDescribe = component.get("c.describeIcons");
         var iconDescribePromise = helper.executeAction(component, iconDescribe);
         iconDescribePromise.then(
             $A.getCallback(function(result){
                 if(result !== undefined){
                     var iconDescribeResult = JSON.parse(result);
-                    console.log("iconResult", iconDescribeResult);
+                    //console.log("iconResult", iconDescribeResult);
                     var finalResult = {};
                     for(var c = 0; c < iconDescribeResult.themeItems.length; c++){
                         var found = false;
@@ -465,14 +472,14 @@
                             }
                         }
                     }
-                    console.log("Final parsed icon list", finalResult);
+                    //console.log("Final parsed icon list", finalResult);
                     window.DataCache.setData("qae_icons", finalResult);
                 }
             }),
             $A.getCallback(function(result){
             })
         )
-        console.log('Exit get icons');
+        //console.log('Exit get icons');
     },
     createComponent : function(component, helper, quickAction){
         $A.createComponent(
@@ -486,7 +493,7 @@
                     component.set("v.lightningComponent", lightningComponent);
                 }
                 else if (status === "INCOMPLETE") {
-                    console.log("No response from server or client is offline.")
+                    //.log("No response from server or client is offline.")
                     // Show offline error
                 }
                 else if (status === "ERROR") {
@@ -504,11 +511,11 @@
 		queryRelatedRecordActionPromise.then(
             $A.getCallback(function(result){
                 var res = JSON.parse(result);
-                console.log(res);
+                //console.log(res);
                 var fields = component.get("v.fields").split(",");
                 var columns = [];
                 fields.forEach(function(key){
-                    console.log(key);
+                    //console.log(key);
                     var thisField = objectDescribe.fields[key];
                     if(thisField !== undefined){
                         var fieldType = '';
@@ -544,7 +551,7 @@
     validate : function(component, event, helper){
         var record = component.get("v.record");
         var requiredFields = component.get("v.requiredFields");
-        console.log("requiredFields", requiredFields);
+        //console.log("requiredFields", requiredFields);
         var hasError = false;
         Object.keys(record).forEach(function(key){
             if(requiredFields.indexOf(key) !== -1 && record[key] === null){
@@ -555,7 +562,7 @@
         items.forEach(function(item){
            item.checkValidity(); 
         });
-        console.log("hasError", hasError);
+        //console.log("hasError", hasError);
 		component.set("v.hasError", hasError);
         return hasError;
     }

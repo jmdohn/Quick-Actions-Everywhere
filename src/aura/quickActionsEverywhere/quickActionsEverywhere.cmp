@@ -145,7 +145,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                         <aura:if isTrue="{!v.vfHost eq null &amp;&amp; v.redirectAction == 'child'}">
                         	<lightning:button variant="neutral" label="{!$Label.c.qae_saveAndGo}" title="{!$Label.c.qae_saveAndGo}" onclick="{!c.handleSave}" />
                         </aura:if>
-                        <aura:if isTrue="{!v.quickAction.type == 'Create'}">
+                        <aura:if isTrue="{!v.quickAction.type ne 'Update'}">
                             <lightning:button variant="{!v.vfHost eq null ? 'brand':'neutral'}" label="{!$Label.c.qae_saveAndNew}" title="{!$Label.c.qae_saveAndNew}" onclick="{!c.handleSaveAndNew}"/>
                         </aura:if>
                         <aura:if isTrue="{!v.vfHost ne null || v.quickAction.type == 'Update'}">
@@ -154,7 +154,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
                     </footer>
                     <aura:set attribute="else">
                         <footer class="slds-modal__footer slds-grid_vertical">
-                            <aura:if isTrue="{!v.quickAction.type == 'Create'}">
+                            <aura:if isTrue="{!v.quickAction.type ne 'Update'}">
                                 <div class="slds-col slds-p-top_small">
                                     <lightning:button label="{!$Label.c.qae_saveAndNew}" title="{!$Label.c.qae_saveAndNew}" onclick="{!c.handleSaveAndNew}" class="qae_mobileButton slds-m-top_small" />
                                 </div>

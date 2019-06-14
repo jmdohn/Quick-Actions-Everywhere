@@ -369,9 +369,9 @@ public with sharing class quickActionsEverywhereController {
             sObjList.add(sobjToCommit);
             system.debug('Object Describe Result ' + odr);
             system.debug('serializedSobject ' + sobjSerialized);
-            if(quickActionType == 'Create'){
+            if(quickActionType == 'Update'){
                 try{
-                    Database.SaveResult[] srRes = database.insert(sObjList);
+                    Database.SaveResult[] srRes = database.update(sObjList);
                     sr.saveResult = srRes;
                 } catch(exception e){
                     sr.errorMsg = e.getMessage();
@@ -379,7 +379,7 @@ public with sharing class quickActionsEverywhereController {
                 return sr;
             } else {
                 try{
-                    Database.SaveResult[] srRes = database.update(sObjList);
+                    Database.SaveResult[] srRes = database.insert(sObjList);
                     sr.saveResult = srRes;
                 } catch(exception e){
                     sr.errorMsg = e.getMessage();
