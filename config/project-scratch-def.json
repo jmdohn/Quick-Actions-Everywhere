@@ -1,0 +1,9 @@
+{
+    "orgName": "Demo Company",
+    "edition": "Enterprise",
+	"hasSampleData" : true,
+    "orgPreferences" : {
+        "enabled": ["S1DesktopEnabled", "ChatterEnabled", "EnhancedEmailEnabled"]
+    },
+	"features" : ["LightningSalesConsole", "StateAndCountryPicklist"]
+}

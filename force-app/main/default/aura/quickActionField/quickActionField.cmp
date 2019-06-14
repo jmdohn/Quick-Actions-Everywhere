@@ -1,0 +1,338 @@
+<!--
+BSD 3-Clause License
+
+Copyright (c) 2018, Jeremiah Dohn
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<aura:component extends="c:qae_extensible">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="change" value="{!v.quickActionField.layoutComponents[0].components[4].details.value}" action="{!c.updateProvinces}"/>
+    <aura:method name="checkValidity" action="{!c.checkValidity}" />
+    
+    <aura:registerEvent name="updateRecord" type="c:qae_UpdateRecord"/>
+    
+    <ltng:require scripts="{!$Resource.DataCache}" />
+    
+    <aura:attribute name="quickActionField" type="object" access="public" />
+    <aura:attribute name="quickActionType" type="string" description="Type of quick action" />
+    <aura:attribute name="quickActionObjectType" type="string"/>
+    <aura:attribute name="isSearching" type="boolean" access="private" description="Used for if the user is currently searching in a lookup component" />
+    <aura:attribute name="options" type="list" />
+    <aura:attribute name="valid" type="boolean" default="true"/>
+    <aura:attribute name="originalValue" type="string" />
+    <aura:attribute name="selectedObject" type="string" />
+    <aura:attribute name="selectedObjectLabel" type="string" />
+    <aura:attribute name="selectedIcon" type="object" />
+    <aura:attribute name="multiObjects" type="object" />
+    <aura:attribute name="fieldsToDisplay" type="list" />
+    <aura:attribute name="countryOptions" type="list" />
+    <aura:attribute name="provinceOptions" type="list" />
+    <aura:attribute name="requiredFields" type="list" />
+
+    <aura:if isTrue="{!v.quickActionField.layoutComponents[0].components ne undefined}">
+        	<!-- Compound fields: names and addresses-->
+        	<aura:if isTrue="{!and(v.quickActionField.layoutComponents[0].fieldType == 'address', v.quickActionField.layoutComponents[0].details.accessible)}">
+                <aura:if isTrue="{!v.countryOptions.length eq 0}">
+                    <lightning:inputAddress aura:id="field"
+                                            addressLabel="{!v.quickActionField.label}"
+                                            streetLabel="{!v.quickActionField.layoutComponents[0].components[0].details.label}"
+                                            street="{!v.quickActionField.layoutComponents[0].components[0].details.value}"
+                                            cityLabel="{!v.quickActionField.layoutComponents[0].components[1].details.label}"
+                                            city="{!v.quickActionField.layoutComponents[0].components[1].details.value}"
+                                            provinceLabel="{!v.quickActionField.layoutComponents[0].components[2].details.label}"
+                                            province="{!v.quickActionField.layoutComponents[0].components[2].details.value}"
+                                            postalCodeLabel="{!v.quickActionField.layoutComponents[0].components[3].details.label}"
+                                            postalCode="{!v.quickActionField.layoutComponents[0].components[3].details.value}"
+                                            countryLabel="{!v.quickActionField.layoutComponents[0].components[4].details.label}"
+                                            country="{!v.quickActionField.layoutComponents[0].components[4].details.value}"
+                                            required="{!v.quickActionField.required}"
+                                            disabled="{(and(v.quickActionType=='Create', v.quickActionField.layoutComponents[0].details.createable == false) || and(v.quickActionType=='Update', v.quickActionField.layoutComponents[0].details.updatable == false)) 
+                                                      || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"
+                                            onchange="{!c.handleChangedField}"/>
+                    <aura:set attribute="else">
+                        <lightning:inputAddress aura:id="field"
+                                                addressLabel="{!v.quickActionField.label}"
+                                                streetLabel="{!v.quickActionField.layoutComponents[0].components[0].details.label}"
+                                                street="{!v.quickActionField.layoutComponents[0].components[0].details.value}"
+                                                cityLabel="{!v.quickActionField.layoutComponents[0].components[1].details.label}"
+                                                city="{!v.quickActionField.layoutComponents[0].components[1].details.value}"
+                                                provinceLabel="{!v.quickActionField.layoutComponents[0].components[2].details.label}"
+                                                province="{!v.quickActionField.layoutComponents[0].components[2].details.value}"
+                                                postalCodeLabel="{!v.quickActionField.layoutComponents[0].components[3].details.label}"
+                                                postalCode="{!v.quickActionField.layoutComponents[0].components[3].details.value}"
+                                                countryLabel="{!v.quickActionField.layoutComponents[0].components[4].details.label}"
+                                                country="{!v.quickActionField.layoutComponents[0].components[4].details.value}"
+                                                countryOptions="{!v.countryOptions}"
+                                                provinceOptions="{!v.provinceOptions}"
+                                                required="{!v.quickActionField.required}"
+                                                disabled="{(and(v.quickActionType=='Create', v.quickActionField.layoutComponents[0].details.createable == false) || and(v.quickActionType=='Update', v.quickActionField.layoutComponents[0].details.updatable == false)) 
+                                                          || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"
+                                                onchange="{!c.handleChangedField}"/>
+                    </aura:set>
+                </aura:if>
+                <aura:set attribute="else">
+                    <aura:if isTrue="{!v.quickActionField.layoutComponents[0].details.accessible}">
+                        <aura:if isTrue="{!and(v.quickActionField.layoutComponents[0].components[2].value ne 'MiddleName', v.quickActionField.layoutComponents[0].components[4].value ne 'Suffix')}">
+                            <lightning:inputName aura:id="field"
+                                                 label="{!v.quickActionField.label}"
+                                                 salutation="{!v.quickActionField.layoutComponents[0].components[0].details.value}"
+                                                 firstName="{!v.quickActionField.layoutComponents[0].components[1].details.value}"
+                                                 lastName="{!v.quickActionField.layoutComponents[0].components[2].details.value}"
+                                                 options="{!v.quickActionField.layoutComponents[0].components[0].details.picklistValues}"
+                                                 fieldsToDisplay="{!v.fieldsToDisplay}"
+                                                 required="{!v.quickActionField.required}"
+                                                 disabled="{(and(v.quickActionType=='Create', v.quickActionField.layoutComponents[0].details.createable == false) || and(v.quickActionType=='Update', v.quickActionField.layoutComponents[0].details.updatable == false)) 
+                                                           || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"
+                                                 onchange="{!c.handleChangedField}"/>                        
+                        </aura:if>
+                        <aura:if isTrue="{!and(v.quickActionField.layoutComponents[0].components[2].value ne 'MiddleName', v.quickActionField.layoutComponents[0].components[3].value eq 'Suffix')}">
+                            <lightning:inputName aura:id="field"
+                                                 label="{!v.quickActionField.label}"
+                                                 salutation="{!v.quickActionField.layoutComponents[0].components[0].details.value}"
+                                                 firstName="{!v.quickActionField.layoutComponents[0].components[1].details.value}"
+                                                 lastName="{!v.quickActionField.layoutComponents[0].components[2].details.value}"
+                                                 suffix="{!v.quickActionField.layoutComponents[0].components[3].details.value}"
+                                                 options="{!v.quickActionField.layoutComponents[0].components[0].details.picklistValues}"
+                                                 fieldsToDisplay="{!v.fieldsToDisplay}"
+                                                 required="{!v.quickActionField.required}"
+                                                 disabled="{(and(v.quickActionType=='Create', v.quickActionField.layoutComponents[0].details.createable == false) || and(v.quickActionType=='Update', v.quickActionField.layoutComponents[0].details.updatable == false)) 
+                                                           || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"
+                                                 onchange="{!c.handleChangedField}"/>
+                        </aura:if>
+                        <aura:if isTrue="{!and(v.quickActionField.layoutComponents[0].components[2].value eq 'MiddleName', v.quickActionField.layoutComponents[0].components[4].value eq 'Suffix')}">
+                            <lightning:inputName aura:id="field"
+                                                 label="{!v.quickActionField.label}"
+                                                 salutation="{!v.quickActionField.layoutComponents[0].components[0].details.value}"
+                                                 firstName="{!v.quickActionField.layoutComponents[0].components[1].details.value}"
+                                                 middleName="{!v.quickActionField.layoutComponents[0].components[2].details.value}"
+                                                 lastName="{!v.quickActionField.layoutComponents[0].components[3].details.value}"
+                                                 suffix="{!v.quickActionField.layoutComponents[0].components[4].details.value}"
+                                                 options="{!v.quickActionField.layoutComponents[0].components[0].details.picklistValues}"
+                                                 fieldsToDisplay="{!v.fieldsToDisplay}"
+                                                 required="{!v.quickActionField.required}"
+                                                 disabled="{(and(v.quickActionType=='Create', v.quickActionField.layoutComponents[0].details.createable == false) || and(v.quickActionType=='Update', v.quickActionField.layoutComponents[0].details.updatable == false)) 
+                                                           || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"
+                                                 onchange="{!c.handleChangedField}"/>
+                        </aura:if>
+                        <aura:if isTrue="{!and(v.quickActionField.layoutComponents[0].components[2].value eq 'MiddleName', v.quickActionField.layoutComponents[0].components[4] eq undefined)}">
+                            <lightning:inputName aura:id="field"
+                                                 label="{!v.quickActionField.label}"
+                                                 salutation="{!v.quickActionField.layoutComponents[0].components[0].details.value}"
+                                                 firstName="{!v.quickActionField.layoutComponents[0].components[1].details.value}"
+                                                 middleName="{!v.quickActionField.layoutComponents[0].components[2].details.value}"
+                                                 lastName="{!v.quickActionField.layoutComponents[0].components[3].details.value}"
+                                                 options="{!v.quickActionField.layoutComponents[0].components[0].details.picklistValues}"
+                                                 fieldsToDisplay="{!v.fieldsToDisplay}"
+                                                 required="{!v.quickActionField.required}"
+                                                 disabled="{(and(v.quickActionType=='Create', v.quickActionField.layoutComponents[0].details.createable == false) || and(v.quickActionType=='Update', v.quickActionField.layoutComponents[0].details.updatable == false)) 
+                                                           || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"
+                                                 onchange="{!c.handleChangedField}"/>
+                        </aura:if>
+                    </aura:if>
+                </aura:set>	
+        	</aura:if>
+        <aura:set attribute="else">
+            <!--Regular single fields -->
+            <aura:iteration items="{!v.quickActionField.layoutComponents}" var="component">
+                <aura:if isTrue="{!and(component.details.type == 'reference', component.details.accessible)}">
+                    <c:qae_Lookup aura:id="field"
+                                  label="{!v.quickActionField.label}"
+                              	  required="{!v.quickActionField.required}"
+                              	  selectedId="{!component.details.value}"
+                                  selectedName="{!component.details.searchLabel}"
+                              	  selectedObject="{!v.selectedObject}"
+                              	  selectedIcon="{!v.selectedIcon}"
+                              	  multiObjects="{!v.multiObjects}"
+                              	  field="{!component.details.name}"
+                              	  disabled="{(and(v.quickActionType=='Create', component.details.createable == false) || and(v.quickActionType=='Update', component.details.updatable == false)) 
+                    || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"/>
+                </aura:if>
+                <aura:if isTrue="{!and(component.details.type == 'combobox', component.details.accessible)}">
+                    <lightning:input aura:id="field"
+                                     label="{!v.quickActionField.label}" 
+                                     required="{!v.quickActionField.required}" 
+                                     value="{!component.details.value}" 
+                                     onchange="{!c.handleChangedField}"
+                                     disabled="{(and(v.quickActionType=='Create', component.details.createable == false) || and(v.quickActionType=='Update', component.details.updatable == false)) 
+                    || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"/>
+                </aura:if>
+                <aura:if isTrue="{!and((component.details.type == 'double' || component.details.type == 'integer' ||  component.details.type == 'currency'), component.details.accessible)}">
+                    <lightning:input aura:id="field"
+                                     label="{!v.quickActionField.label}" 
+                                     required="{!v.quickActionField.required}" 
+                                     value="{!component.details.value}" 
+                                     type="number"
+                                     onchange="{!c.handleChangedField}"
+                                     disabled="{(and(v.quickActionType=='Create', component.details.createable == false) || and(v.quickActionType=='Update', component.details.updatable == false)) 
+                    || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"/>
+                </aura:if>
+                <aura:if isTrue="{!and((component.details.type == 'text' || component.details.type == 'string' || component.details.type == 'encryptedstring'), component.details.accessible)}">
+                    <lightning:input aura:id="field"
+                                     label="{!v.quickActionField.label}" 
+                                     required="{!v.quickActionField.required}" 
+                                     value="{!component.details.value}" 
+                                     type="text"
+                                     maxLength="{!component.details.length}"
+                                     onchange="{!c.handleChangedField}"
+                                     disabled="{(and(v.quickActionType=='Create', component.details.createable == false) || and(v.quickActionType=='Update', component.details.updatable == false)) 
+                    || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"/>
+                </aura:if>
+                <aura:if isTrue="{!and(component.details.type == 'email', component.details.accessible)}">
+                    <lightning:input aura:id="field"
+                                     label="{!v.quickActionField.label}" 
+                                     required="{!v.quickActionField.required}" 
+                                     value="{!component.details.value}" 
+                                     type="email"
+                                     maxLength="{!component.details.length}"
+                                     onchange="{!c.handleChangedField}"
+                                     disabled="{(and(v.quickActionType=='Create', component.details.createable == false) || and(v.quickActionType=='Update', component.details.updatable == false)) 
+                    || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"/>
+                </aura:if>
+                <aura:if isTrue="{!and(component.details.type == 'picklist', component.details.accessible)}">
+                    <lightning:select aura:id="field"
+                                      label="{!v.quickActionField.label}" 
+                                      required="{!v.quickActionField.required}" 
+                                      value="{!component.details.value}" 
+                                      validity="{!not(v.valid)}"
+                                      onchange="{!c.checkRequired}"
+                                      disabled="{(and(v.quickActionType=='Create', component.details.createable == false) || and(v.quickActionType=='Update', component.details.updatable == false)) 
+                    || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}">
+                        <option value="">-- None --</option>
+                        <aura:iteration items="{!v.quickActionField.layoutComponents[0].details.picklistValues}" var="options">
+                        	<option value="{!options.value}">{!options.label}</option>
+                        </aura:iteration>
+                    </lightning:select>
+                    <aura:if isTrue="{! not(v.valid)}">
+                        <div class="slds-form-element slds-has-error">
+                            <div class="slds-form-element__help">{!$Label.c.qae_hasError}</div>
+                        </div>
+                    </aura:if> 
+                </aura:if>
+                <aura:if isTrue="{!and(component.details.type == 'date', component.details.accessible)}">
+                    <lightning:input aura:id="field"
+                                     label="{!v.quickActionField.label}"
+                                     required="{!v.quickActionField.required}" 
+                                     value="{!component.details.value}" 
+                                     type="date"
+                                     onchange="{!c.handleChangedField}"
+                                     disabled="{(and(v.quickActionType=='Create', component.details.createable == false) || and(v.quickActionType=='Update', component.details.updatable == false)) 
+                    || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"/>
+                </aura:if>
+                <aura:if isTrue="{!and(component.details.type == 'datetime', component.details.accessible)}">
+                    <lightning:input aura:id="field"
+                                     label="{!v.quickActionField.label}" 
+                                     required="{!v.quickActionField.required}" 
+                                     value="{!component.details.value}" 
+                                     type="datetime"
+                                     onchange="{!c.handleChangedField}"
+                                     disabled="{(and(v.quickActionType=='Create', component.details.createable == false) || and(v.quickActionType=='Update', component.details.updatable == false)) 
+                    || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"/>
+                </aura:if>
+                <aura:if isTrue="{!and(component.details.type == 'time', component.details.accessible)}">
+                    <lightning:input aura:id="field"
+                                     label="{!v.quickActionField.label}" 
+                                     required="{!v.quickActionField.required}" 
+                                     value="{!component.details.value}" 
+                                     type="time"
+                                     onchange="{!c.handleChangedField}"
+                                     disabled="{(and(v.quickActionType=='Create', component.details.createable == false) || and(v.quickActionType=='Update', component.details.updatable == false)) 
+                    || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"/>
+                </aura:if>
+                <aura:if isTrue="{!and(component.details.type == 'phone', component.details.accessible)}">
+                    <lightning:input aura:id="field"
+                                     label="{!v.quickActionField.label}" 
+                                     required="{!v.quickActionField.required}" 
+                                     value="{!component.details.value}" 
+                                     type="phone"
+                                     maxLength="{!component.details.length}"
+                                     onchange="{!c.handleChangedField}"
+                                     disabled="{(and(v.quickActionType=='Create', component.details.createable == false) || and(v.quickActionType=='Update', component.details.updatable == false)) 
+                    || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"/>
+                </aura:if>
+                <aura:if isTrue="{!and(component.details.type == 'url', component.details.accessible)}">
+                    <lightning:input aura:id="field"
+                                     label="{!v.quickActionField.label}" 
+                                     required="{!v.quickActionField.required}"
+                                     type="url"
+                                     maxLength="{!component.details.length}"
+                                     onchange="{!c.handleChangedField}"
+                                     disabled="{(and(v.quickActionType=='Create', component.details.createable == false) || and(v.quickActionType=='Update', component.details.updatable == false)) 
+                    || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"/>
+                </aura:if>
+                <aura:if isTrue="{!and(component.details.type == 'boolean', component.details.accessible) &amp;&amp;
+                                      if(component.details.name eq 'IsReminderSet' &amp;&amp; v.quickActionObjectType eq 'Event', false, true)}">
+                    <lightning:input aura:id="field"
+                                     type="checkbox" 
+                                     label="{!v.quickActionField.label}"
+                                     checked="{!component.details.value}"
+                                     required="{!v.quickActionField.required}" 
+                                     value="{!component.details.value}" 
+                                     onchange="{!c.handleChangedField}"
+                                     disabled="{(and(v.quickActionType=='Create', component.details.createable == false) || and(v.quickActionType=='Update', component.details.updatable == false)) 
+                    || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}" />
+                    <aura:if isTrue="{!and(component.details.value == true, component.details.name == 'IsReminderSet')}">
+                        <lightning:input type="datetime"
+                                         aura:id="ReminderDateTime"
+                                         name="ReminderDateTime" 
+                                         label="{!$Label.c.qae_reminderDateTime}" 
+                                         value="{!component.details.reminderDateTime}" 
+                                         required="true"
+                                         onchange="{!c.setReminderTime}" />
+                    </aura:if>
+                </aura:if>
+                <aura:if isTrue="{!and(component.details.extraTypeInfo == 'richtextarea', component.details.accessible)}">
+                    <div class="{!v.quickActionField.required ? 'qae_richTextRequired' : ''}">
+                        <lightning:inputRichText aura:id="richText"
+                                                 label="{!v.quickActionField.label}" 
+                                                 labelVisible="true"
+                                                 disabled="{(and(v.quickActionType=='Create', component.details.createable == false) || and(v.quickActionType=='Update', component.details.updatable == false)) 
+                    || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"
+                                                 onblur="{!c.checkRequired}"
+                                                 value="{!component.details.value}"
+                                                 valid="{!v.valid}" />
+                        <aura:if isTrue="{! not(v.valid)}">
+                            <div class="slds-form-element slds-has-error">
+                                <div class="slds-form-element__help">{!$Label.c.qae_hasError}</div>
+                            </div>
+                        </aura:if> 
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!and(component.details.extraTypeInfo == 'plaintextarea', component.details.accessible)}">
+                     <lightning:textarea aura:id="field"
+                                         label="{!v.quickActionField.label}" 
+                                         value="{!component.details.value}" 
+                                         required="{!v.quickActionField.required}"
+                                         maxLength="{!component.details.length}"
+                                         onchange="{!c.handleChangedField}"
+                                         disabled="{(and(v.quickActionType=='Create', component.details.createable == false) || and(v.quickActionType=='Update', component.details.updatable == false)) 
+                    || !(and(v.quickActionField.editableForNew, v.quickActionType eq 'Create') || and(v.quickActionField.editableForUpdate, v.quickActionType eq 'Update'))}"/>
+                </aura:if>
+            </aura:iteration>
+        </aura:set>
+    </aura:if>
+</aura:component>

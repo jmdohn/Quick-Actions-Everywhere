@@ -1,0 +1,11 @@
+# List files or directories below to ignore them when running force:source:push, force:source:pull, and force:source:status
+# More information: https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_exclude_source.htm
+#
+
+package.xml
+AppSwitcher.appMenu
+qae_REST_API.authprovider
+qae_REST_API.connectedApp
+qae_REST_API.namedCredential
+Security.settings
+#Customer Portal.portal

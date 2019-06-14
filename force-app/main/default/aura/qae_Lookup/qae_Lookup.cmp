@@ -1,0 +1,134 @@
+<!--
+BSD 3-Clause License
+
+Copyright (c) 2018, Jeremiah Dohn
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<aura:component extends="c:qae_extensible">
+    <aura:attribute name="selectedId" type="string" description="Value of selected record" />
+    <aura:attribute name="selectedName" type="string" description="Name of selected record" />
+    <aura:attribute name="field" type="string" description="Field API Name" />
+    <aura:attribute name="label" type="string" description="Label of field" />
+    <aura:attribute name="isOpen" type="boolean" description="Whether the search is open or not." />
+    <aura:attribute name="primaryField" type="string" description="Primary field to query" />
+    <aura:attribute name="secondaryFields" type="string" description="Secondary fields to query in a comma delimited string" />
+    <aura:attribute name="searchTerm" type="string" description="What the search value is" />
+    <aura:attribute name="multiObjects" type="map" description="List of objects enabled for multisearch" />
+    <aura:attribute name="selectedObject" type="string" description="Object to search." />
+    <aura:attribute name="selectedObjectLabel" type="string" description="Object to search." />
+    <aura:attribute name="searchSize" type="string" default="5" description="Size of return list to display" />
+    <aura:attribute name="searchResults" type="list" description="List of returned values." />
+    <aura:attribute name="searchNoResults" type="boolean" description="Used for when no results are returned from search." />
+    <aura:attribute name="multiObjectOpen" type="boolean" description="If multiobject dropdown is open." />
+    <aura:attribute name="required" type="boolean" description="required" />
+    <aura:attribute name="showError" type="boolean" />
+    <aura:attribute name="size" type="string" default="12"/>
+    <aura:attribute name="disabled" type="boolean" />
+    <aura:attribute name="selectedIcon" type="object" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.multiObjectChange}" />
+    <aura:handler name="change" value="{!v.selectedObject}" action="{!c.multiObjectChange}" />
+    <aura:handler name="change" value="{!v.multiObjectOpen}" action="{!c.multiObjectOpen}" />
+    <aura:registerEvent name="updateRecord" type="c:qae_UpdateRecord"/>
+    
+    <lightning:layout>
+        <lightning:layoutItem size="{!v.size}">
+            <div class="slds-form-element">
+                <aura:if isTrue="{!v.required}">
+                    <abbr class="slds-required" title="required">*</abbr>
+                </aura:if>
+                <label class="slds-form-element__label" for="{!globalId + '_combobox-id'}">{!v.label}</label>
+                <div class="slds-form-element__control">
+                    <div class="slds-combobox_container">
+                        <aura:if isTrue="{!v.selectedId ne null}">
+                            <div class="slds-pill_container">
+                                <lightning:pill label="{!v.selectedName}" onremove="{!c.removePill}" class="qae_pill">
+                                    <aura:set attribute="media">
+                                        <img src="{!v.selectedIcon.iconurl}" style="{!'border-radius: 4px;background-color: #' + v.selectedIcon.iconcolor}"/>
+                                    </aura:set>
+                                </lightning:pill>
+                            </div>
+                            <aura:set attribute="else">
+                                <div class="{!(v.showError ? 'slds-has-error ' : '') + 'slds-combobox__form-element slds-input-has-icon slds-input-has-icon_left-right'}" role="none">
+                                    <aura:if isTrue="{!empty(v.multiObjects)}">
+                                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+                                            <img class="slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default" src="{!v.selectedIcon.iconurl}" style="{!'border-radius: 4px;width: 1.25rem;height: 1.25rem;left: .25rem;top: 40%;background-color: #' + v.selectedIcon.iconcolor}" />
+                                            <input type="text" disabled="{!v.disabled ? 'true' : ''}" class="slds-input slds-combobox__input" id="{!globalId + '_combobox-id'}" aria-activedescendant="option1" aria-autocomplete="list" aria-controls="{!globalId + '_listbox-id'}" autocomplete="off" role="textbox" onkeyup="{!c.doSearch}" onblur="{!c.checkRequired}"/>
+                                        </div>
+                                        <aura:if isTrue="{!v.showError}">
+                                            <div class="slds-form-element__help">{!$Label.c.qae_hasError}</div>
+                                        </aura:if>
+                                        <aura:set attribute="else">
+                                            <c:qae_MultiobjectDropdown multiObjects="{!v.multiObjects}" selectedObject="{!v.selectedObject}"  isOpen="{!v.multiObjectOpen}"/>
+                                            <input type="text" disabled="{!v.disabled ? 'true' : ''}" class="slds-p-left_large slds-input slds-combobox__input" id="{!globalId + '_combobox-id'}" aria-activedescendant="option1" aria-autocomplete="list" aria-controls="{!globalId + '_listbox-id'}" autocomplete="off" role="textbox" onkeyup="{!c.doSearch}" onblur="{!c.checkRequired}"/>
+                                            <aura:if isTrue="{!v.showError}">
+                                                <div class="slds-form-element__help">{!$Label.c.qae_hasError}</div>
+                                            </aura:if>
+                                        </aura:set>
+                                    </aura:if>
+                                    <span class="'slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_right" style="{!(v.showError ? 'top: 30%;' : '')}">
+                                        <lightning:icon iconName="utility:search" alternativeText="search" size="x-small"/>
+                                    </span>
+                                </div>
+                                <div class="{!'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click ' + (v.isOpen ? 'slds-is-open' : '')}" aria-expanded="{!v.isOpen}" aria-haspopup="listbox" role="combobox">
+                                    <div id="{!globalId + '_listbox-id'}" class="{!'slds-dropdown slds-dropdown_length-with-icon-' + v.searchSize + ' slds-dropdown_fluid'}" role="listbox">
+                                        <aura:if isTrue="{! and(v.searchResults.length > 0, v.selectedId eq null)}">
+                                            
+                                            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                                <aura:iteration items="{!v.searchResults}" var="item">
+                                                    <li id="{!item.id}" data-name="{!item.primaryField}" role="presentation" class="slds-listbox__item" onclick="{!c.setSelected}">
+                                                        <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta" role="option" tabindex="0">
+                                                            <span class="slds-media__figure">
+                                                                <span class="slds-icon_container slds-icon-standard-account">
+                                                                </span>
+                                                            </span> 
+                                                            <span class="slds-media__body">
+                                                                <span class="slds-listbox__option-text slds-listbox__option-text_entity">{!item.primaryField}</span>
+                                                                <span class="slds-listbox__option-meta slds-listbox__option-meta_entity">{!item.secondaryFields}</span>
+                                                            </span>
+                                                        </div>
+                                                    </li>
+                                                </aura:iteration>
+                                            </ul>
+                                            
+                                            <aura:set attribute="else">
+                                                <aura:if isTrue="{!v.searchNoResults}">
+                                                    <span class="slds-text slds-p-around_medium">{!$Label.c.qae_noRecords}</span>
+                                                </aura:if>	
+                                            </aura:set>
+                                        </aura:if>
+                                    </div>
+                                </div>
+                            </aura:set>
+                        </aura:if>
+                    </div>
+                </div>
+            </div>
+        </lightning:layoutItem>
+    </lightning:layout>
+</aura:component>

@@ -1,0 +1,26 @@
+.THIS.qae_IconContainer {
+    position:absolute;
+    top:5%;
+    height:1.75rem;
+    width:1.75rem;
+    left: .25rem;
+}
+.THIS .qae_LeftIconContainer{
+    height:1.25rem;
+    width:1.25rem;
+}
+.THIS .qae_LeftIcon{
+    border-radius: 4px;
+    width: 1.25rem;
+    height: 1.25rem;
+    left: .25rem;
+    top: 40%;
+}
+.THIS .qae_RightIconContainer{
+    height:.25rem;
+    width:.25rem;
+}
+.THIS .qae_RightIcon > lightning-primitive-icon > svg{
+    width: .5rem;
+    height: .5rem;
+}

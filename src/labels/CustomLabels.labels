@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>qae_RecordCreated</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>qae_RecordCreated</shortDescription>
+        <value>{0} record created.</value>
+    </labels>
+    <labels>
+        <fullName>qae_cancel</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>qae_cancel</shortDescription>
+        <value>Cancel</value>
+    </labels>
+    <labels>
+        <fullName>qae_hasError</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>qae_hasError</shortDescription>
+        <value>Complete this field.</value>
+    </labels>
+    <labels>
+        <fullName>qae_lightningComponentError</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>qae_lightningComponentError</shortDescription>
+        <value>There was an error creating the lightning component.  Please contact your system administrator.</value>
+    </labels>
+    <labels>
+        <fullName>qae_next</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>qae_next</shortDescription>
+        <value>Next</value>
+    </labels>
+    <labels>
+        <fullName>qae_noRecords</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>qae_noRecords</shortDescription>
+        <value>No matching results found.</value>
+    </labels>
+    <labels>
+        <fullName>qae_recordTypeError</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>qae_recordTypeError</shortDescription>
+        <value>You do not have access to this record type.  If you believe that you have received this message in error, contact your system administrator.</value>
+    </labels>
+    <labels>
+        <fullName>qae_recordsRemainingPlural</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>qae_recordsRemainingPlural</shortDescription>
+        <value>{0} records remaining.</value>
+    </labels>
+    <labels>
+        <fullName>qae_recordsRemainingSingular</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>qae_recordsRemainingSingular</shortDescription>
+        <value>{0} record remaining.</value>
+    </labels>
+    <labels>
+        <fullName>qae_reminderDateTime</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>qae_reminderDateTime</shortDescription>
+        <value>Reminder Date</value>
+    </labels>
+    <labels>
+        <fullName>qae_save</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>qae_save</shortDescription>
+        <value>Save</value>
+    </labels>
+    <labels>
+        <fullName>qae_saveAndGo</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>qae_saveAndGo</shortDescription>
+        <value>Save &amp; Go to Record</value>
+    </labels>
+    <labels>
+        <fullName>qae_saveAndNew</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>qae_saveAndNew</shortDescription>
+        <value>Save &amp; New</value>
+    </labels>
+    <labels>
+        <fullName>qae_selectOneRecord</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>qae_selectOneRecord</shortDescription>
+        <value>You must select at least one record.</value>
+    </labels>
+</CustomLabels>

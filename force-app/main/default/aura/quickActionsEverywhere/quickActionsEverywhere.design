@@ -1,0 +1,7 @@
+<design:component>
+    <design:attribute name="relatedField" label="Related Field" description="Field API Name to populate from current record"/>
+    <design:attribute name="redirectAction" label="Redirect Action" description="How to redirect to records. 'child' is the only valid option in lightning component context. By default user is not redirected in lightning context." />
+    <design:attribute name="action" label="Quick Action API Name" description="API Name of the quick action.  Example: Contact.Create_Contact.  For Global actions, only the API name need be entered, ex NewTask"/>
+	<design:attribute name="type" label="Type" description="If this is a quick action or a related list quick action" datasource="quickAction,relatedList" default="quickAction" />
+    <design:attribute name="fields" label="Fields" description="If this is a related list quick action, this is a comma-delimited list (case-sensitive) of fields to display for selection" />
+</design:component>

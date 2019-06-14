@@ -1,0 +1,158 @@
+<apex:page showHeader="true" sidebar="true" title="{!$CurrentPage.parameters.title}" controller="quickActionsEverywhereController">
+        <apex:slds />
+    	<apex:stylesheet value="{!IF($CurrentPage.parameters.flowDevName != null, $Resource.qaeFlow, '')}"/>
+        <apex:form >
+            <apex:actionFunction name="redirectToValue" action="{!redirect}" reRender="false">
+                <apex:param name="value" value=""/>
+            </apex:actionFunction>
+        </apex:form>
+    
+        <div id="selectRecordError"  class="slds-notify_container" style="display: none; position:absolute;" >
+            <div class="slds-notify slds-notify_toast slds-theme_error" role="status">
+                <span class="slds-assistive-text">error</span>
+                <div class="slds-notify__content">
+                    <h2 class="slds-text-heading_small ">{!$Label.qae_selectOneRecord}</h2>
+                </div>
+                <div class="slds-notify__close">
+                    <button class="slds-button slds-button_icon slds-button_icon-inverse" title="Close" onclick="closeError();">
+                        <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                            <path d="M14.3 11.7l6-6c.3-.3.3-.7 0-1l-.9-1c-.3-.2-.7-.2-1 0l-6 6.1c-.2.2-.5.2-.7 0l-6-6.1c-.3-.3-.7-.3-1 0l-1 1c-.2.2-.2.7 0 .9l6.1 6.1c.2.2.2.4 0 .6l-6.1 6.1c-.3.3-.3.7 0 1l1 1c.2.2.7.2.9 0l6.1-6.1c.2-.2.4-.2.6 0l6.1 6.1c.2.2.7.2.9 0l1-1c.3-.3.3-.7 0-1l-6-6c-.2-.2-.2-.5 0-.7z"></path>
+                        </svg>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    
+    <div id="errorDML"  class="slds-notify_container" style="display: none; position:absolute;" >
+            <div class="slds-notify slds-notify_toast slds-theme_error" role="status">
+                <span class="slds-assistive-text">error</span>
+                <div class="slds-notify__content">
+                    <h2 id="errorValue" class="slds-text-heading_small "></h2>
+                </div>
+                <div class="slds-notify__close">
+                    <button class="slds-button slds-button_icon slds-button_icon-inverse" title="Close" onclick="closeErrorDML();">
+                        <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+                            <path d="M14.3 11.7l6-6c.3-.3.3-.7 0-1l-.9-1c-.3-.2-.7-.2-1 0l-6 6.1c-.2.2-.5.2-.7 0l-6-6.1c-.3-.3-.7-.3-1 0l-1 1c-.2.2-.2.7 0 .9l6.1 6.1c.2.2.2.4 0 .6l-6.1 6.1c-.3.3-.3.7 0 1l1 1c.2.2.7.2.9 0l6.1-6.1c.2-.2.4-.2.6 0l6.1 6.1c.2.2.7.2.9 0l1-1c.3-.3.3-.7 0-1l-6-6c-.2-.2-.2-.5 0-.7z"></path>
+                        </svg>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    
+        <div style="width:100%;height:100%">
+            <apex:includeLightning />
+            <div id="lightning" />
+            
+            <script>
+            function closeError(){
+                var div = document.getElementById("selectRecordError");
+                div.style.display="none";
+            }
+            function closeErrorDML(){
+                var div = document.getElementById("errorDML");
+                div.style.display="none";
+            }
+            // Let's securely communicate with our lightning component
+            var lexOrigin = "{!SUBSTITUTE(LEFT($CurrentPage.URL, FIND('.com',$CurrentPage.URL)+3),'https://','')}";
+            window.addEventListener("message", function(event){
+                var fullLexOrigin = "https://" + lexOrigin;
+                console.log(event.origin);
+                console.log(fullLexOrigin);
+                if(event.origin === fullLexOrigin){
+                    console.log(event);
+                    var data = JSON.parse(event.data);
+                    console.log("data", data);
+                    if(data.showSelectRecordError === true){
+                        var div = document.getElementById("selectRecordError");
+                        div.style.display="";
+                        timeoutFunc = window.setTimeout(closeError(), 2000);
+                    }
+                    if(data.action === "flow"){
+                        redirectToValue(data.redirectValue);
+                        var div = document.getElementById("lightning");
+                        div.style.display="none";
+                    }
+                    if(data.redirectAction =="cancel"){
+                        if("{!$CurrentPage.parameters.relatedId}" !== undefined){
+                            redirectToValue("{!$CurrentPage.parameters.relatedId}");
+                        } else{
+                            redirectToValue();
+                        }
+                    }
+                    if(data.redirectAction =="saveAndNew"){
+                        var error = false;
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.quickActionsEverywhereController.saveThisRecord}',
+                            data.data.attributes.type, JSON.stringify(data.data), "{!$CurrentPage.parameters.relatedId}", data.quickActionType,
+                            function(result, event){
+                                console.log(result);
+                                console.log(event);
+                                if(result.errorMsg != null && result.errorMsg != undefined){
+                                    var div = document.getElementById("errorDML");
+                        			div.style.display="";
+                                    document.getElementById("errorValue").innerHTML = result.errorMsg;
+                                } else if("{!$CurrentPage.parameters.relatedId}" !== undefined){
+                                    redirectToValue("{! RIGHT( $CurrentPage.URL,(LEN( $CurrentPage.URL)-FIND('/apex', $CurrentPage.URL)))}");
+                                } else{
+                                    redirectToValue();
+                                }
+                            }
+                            
+                        );
+                    }
+                    if(data.redirectAction =="save"){
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.quickActionsEverywhereController.saveThisRecord}',
+                            data.data.attributes.type, JSON.stringify(data.data), "{!$CurrentPage.parameters.relatedId}", data.quickActionType,
+                            function(result, event){
+                                console.log(result);
+                                console.log(event);
+                                console.log(result.saveResult[0].id, data.redirectValue);
+                                if(result.errorMsg != null && result.errorMsg != undefined){
+                                    var div = document.getElementById("errorDML");
+                        			div.style.display="";
+                                    document.getElementById("errorValue").innerHTML = result.errorMsg;
+                                } else if( data.selectedRecordsLength <= 1){
+                                    if("{!$CurrentPage.parameters.relatedId}" !== undefined && data.redirectValue !== 'child'){
+                                        redirectToValue("{!$CurrentPage.parameters.relatedId}");
+                                    } else if(data.redirectValue === "child"){
+                                        redirectToValue(result.saveResult[0].id);
+                                    } else {
+                                        redirectToValue();
+                                    }
+                                }
+                            }
+                        ); 
+                    }
+                } else{
+                    // This isn't a trusted source so do nothing!
+                    return;
+                }
+            }, false);
+            
+            $Lightning.use("c:quickActionsEverywhere_LO", function() {
+                $Lightning.createComponent("qae:quickActionsEverywhere",
+                                           {"vfHost" : lexOrigin, 
+                                            "recordId" : '{!$CurrentPage.parameters.recordId}',
+                                            "relatedId" : '{!$CurrentPage.parameters.relatedId}',
+                                            "relatedField" : '{!$CurrentPage.parameters.relatedField}',
+                                            "userThemeDisplayed" : "{!$User.UIThemeDisplayed}",
+                                            "action" : "{!$CurrentPage.parameters.action}",
+                                            "redirectAction" : "{!$CurrentPage.parameters.redirectAction}",
+                                            "flowDevName" : "{!$CurrentPage.parameters.flowDevName}",
+                                            "passRelatedRecordIdToFlow" : "{!$CurrentPage.parameters.passRelatedRecordIdToFlow}",
+                                            "type" : "{!$CurrentPage.parameters.type}",
+                                            "fields" : "{!$CurrentPage.parameters.fields}",
+                                            "relatedObject" : "{!$CurrentPage.parameters.relatedObject}"
+                                           },
+                                           "lightning",
+                                           function(component) {
+                                               
+                                           });
+            });
+            
+            </script>
+        </div>
+</apex:page>

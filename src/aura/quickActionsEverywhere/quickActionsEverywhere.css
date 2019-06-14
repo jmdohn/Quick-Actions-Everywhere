@@ -1,0 +1,36 @@
+.THIS.qae_container{
+    background-image: 
+        url(/_slds/images/themes/lightning_blue/lightning_blue_background.png),
+        linear-gradient(to top, rgba(160, 180, 206, 0.0) 0, rgba(160, 180, 206, 1.0));
+    content: '';
+    display: block;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-repeat: repeat-x;
+    background-position: top left;
+}
+.THIS .qae_icon{
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+    padding: 5px;
+}
+.THIS .qae_component{
+    background: #FFF;
+}
+.THIS .qae_richTextRequired > .lightningInputRichText::before{
+    color: rgb(194, 57, 52);
+    margin: 0 .125rem;
+   	content:"*"; 
+}
+.THIS .qae_edited{
+  background: rgb(250, 255, 189);
+}
+.THIS .qae_mobileButton{
+    width:100%;
+}
+.THIS .qae_mobileButtons{
+    display:block;
+}

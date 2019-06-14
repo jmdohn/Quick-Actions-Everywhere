@@ -1,0 +1,236 @@
+<!--
+BSD 3-Clause License
+
+Copyright (c) 2018, Jeremiah Dohn
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+* Redistributions of source code must retain the above copyright notice, this
+  list of conditions and the following disclaimer.
+
+* Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
+
+* Neither the name of the copyright holder nor the names of its
+  contributors may be used to endorse or promote products derived from
+  this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<aura:component access="global" implements="force:hasRecordId,flexipage:availableForAllPageTypes" extends="c:qae_extensible" >
+    
+    <ltng:require scripts="{!$Resource.DataCache}" afterScriptsLoaded="{!c.doInit}" />
+    <aura:handler name="updateRecord" event="c:qae_UpdateRecord" action="{!c.handleUpdateEvent}"/>
+    <aura:handler name="changeSelection" event="c:qae_UpdateRecord" action="{!c.changeSelection}"/>
+    
+    <aura:attribute name="quickAction" type="Object" description="Returned from server describe" />
+    <aura:attribute name="relatedId" type="string" description="Related record ID"/>
+    <aura:attribute name="records" type="List" description="List of records for update button"/>
+    <aura:attribute name="selectedRecords" type="List" description="List of selected records for update button"/>
+    <aura:attribute name="relatedField" access="global" type="string" description="Related field to populate"/>
+    <aura:attribute name="fields" access="global" type="string" description="Fields to show for search component" />
+    <aura:attribute name="type" access="global" type="string" default="quickAction" description="Set type to relatedList if this is a related list button" />
+    <aura:attribute name="columns" type="list" description="Columns for update list" />
+    <aura:attribute name="redirectAction" access="global" type="string" description="Related field to populate"/>
+    <aura:attribute name="record" type="Object" description="New or updated record to push to server - used for single create events" />
+    <aura:attribute name="userThemeDisplayed" type="string" description="Currently displayed UI theme"/>
+    <aura:attribute name="loading" type="boolean" default="true"/>
+    <aura:attribute name="showNext" type="boolean" />
+    <aura:attribute name="objectLabel" type="string" />
+    <aura:attribute name="vfHost" type="string" description="Visualforce host to make sure communication with the page is secure"/>
+    <aura:attribute name="action" access="global" type="string" description="Action to use" />
+    <aura:attribute name="lightningComponent" type="Aura.Component[]" />
+    <aura:attribute name="searchLayout" type="list" />
+    <aura:attribute name="flowDevName" type="string" default=""/>
+    <aura:attribute name="recordTypeAvailable" type="boolean" default="true" />
+    <aura:attribute name="requiredFields" type="list" />
+    <aura:attribute name="hasError" type="list" />
+    <aura:attribute name="duplicateRulesAvailable" type="boolean" default="true" description="Runs first time the record is changed to check if there are duplicate rules. 
+                                                                                              If there are not, this will be set to false throughout the rest of the interaction."/>
+    <aura:if isTrue="{!and(v.loading, v.recordTypeAvailable)}">
+        <div style="height: 6rem;">
+            <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!v.flowDevName eq '' &amp;&amp; not(v.loading) &amp;&amp; v.recordTypeAvailable &amp;&amp; 
+                      (((v.showNext || v.type ne 'relatedList') &amp;&amp; v.quickAction.type eq 'Update') || (v.quickAction.type ne 'Update'))}">   
+        <div class="qae_container slds-p-around_small" style="{! or(v.userThemeDisplayed == 'Theme3', vfHost == undefined) ? '' : 'position: absolute;'}">
+            <div class="qae_component">
+                <!-- Begin header -->
+                <div class="slds-page-header">
+                    <div class="slds-page-header__row">
+                        <div class="slds-page-header__col-title">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <aura:iteration items="{!v.quickAction.colors}" var="color">
+                                        <aura:if isTrue="{!color.theme == 'theme4'}">
+                                            <img src="{!v.quickAction.icons[0].url}" style="{!'background-color: #' + color.color}" class="qae_icon"/>
+                                        </aura:if>
+                                    </aura:iteration>
+                                </div>
+                                <div class="slds-media__body">
+                                    <div class="slds-page-header__name">
+                                        <div class="slds-page-header__name-title">
+                                            <h1>
+                                                <span class="slds-page-header__title slds-truncate">{!v.quickAction.label}</span>
+                                            </h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <aura:if isTrue="{!v.selectedRecords.length gt 1}">
+                            <div>
+                                {!format($Label.c.qae_recordsRemainingPlural, v.selectedRecords.length)}
+                            </div>
+                        </aura:if>
+                        <aura:if isTrue="{!v.selectedRecords.length eq 1}">
+                            <div>
+                                {!format($Label.c.qae_recordsRemainingSingular, v.selectedRecords.length)}
+                            </div>
+                        </aura:if>
+                    </div>
+                </div>
+                <!-- End header -->
+                <!-- Begin body -->
+                <lightning:layout multipleRows="true">
+                    <aura:iteration items="{!v.quickAction.layout.layoutRows}" var="row">
+                        <aura:iteration items="{!row.layoutItems}" aura:id="items" var="item">
+                            <!-- Don't show those blank spaces on a phone, cause space is everything on phones! -->
+                            <aura:if isTrue="{!and(item.label ne '', $Browser.formFactor eq 'PHONE')}">
+                                <lightning:layoutItem size="{!and(v.quickAction.layout.columns == 2, $Browser.formFactor ne 'PHONE') ? 6 : 12}" smallDeviceSize="12"  mediumDeviceSize="{!v.quickAction.layout.columns == 2 ? 6 : 12}" largeDeviceSize="{!v.quickAction.layout.columns == 2 ? 6 : 12}" padding="horizontal-small" class="slds-p-bottom_x-small">
+                                    <c:quickActionField aura:id="item" 
+                                                        quickActionField="{!item}" 
+                                                        quickActionType="{!v.quickAction.type}" 
+                                                        quickActionObjectType="{!v.quickAction.targetSobjectType}"
+                                                        requiredFields="{!v.requiredFields}" />
+                                </lightning:layoutItem>
+                                <aura:set attribute="else">
+                                    <lightning:layoutItem size="{!and(v.quickAction.layout.columns == 2, $Browser.formFactor ne 'PHONE') ? 6 : 12}" smallDeviceSize="12"  mediumDeviceSize="{!v.quickAction.layout.columns == 2 ? 6 : 12}" largeDeviceSize="{!v.quickAction.layout.columns == 2 ? 6 : 12}" padding="horizontal-small" class="slds-p-bottom_x-small">
+                                        <aura:if  isTrue="{!item.label ne ''}">
+                                            <c:quickActionField aura:id="item" 
+                                                                quickActionField="{!item}" 
+                                                                quickActionType="{!v.quickAction.type}" 
+                                                                quickActionObjectType="{!v.quickAction.targetSobjectType}"
+                                                                requiredFields="{!v.requiredFields}" />
+                                        </aura:if>
+                                    </lightning:layoutItem>
+                                </aura:set>
+                            </aura:if>
+                        </aura:iteration>
+                    </aura:iteration>    
+                </lightning:layout>
+                <!-- Footer -->
+                <aura:if isTrue="{!$Browser.formFactor eq 'DESKTOP'}">
+                    <footer class="{!'slds-m-top_medium slds-modal__footer ' + (v.vfHost ne null ? 'slds-modal__footer_directional' : '')}">
+                        <aura:if isTrue="{!v.vfHost ne null}">
+                            <lightning:button label="{!$Label.c.qae_cancel}" title="{!$Label.c.qae_cancel}" onclick="{!c.handleCancel}"/>
+                        </aura:if>
+                        <aura:if isTrue="{!v.vfHost eq null &amp;&amp; v.redirectAction == 'child'}">
+                        	<lightning:button variant="neutral" label="{!$Label.c.qae_saveAndGo}" title="{!$Label.c.qae_saveAndGo}" onclick="{!c.handleSave}" />
+                        </aura:if>
+                        <aura:if isTrue="{!v.quickAction.type == 'Create'}">
+                            <lightning:button variant="{!v.vfHost eq null ? 'brand':'neutral'}" label="{!$Label.c.qae_saveAndNew}" title="{!$Label.c.qae_saveAndNew}" onclick="{!c.handleSaveAndNew}"/>
+                        </aura:if>
+                        <aura:if isTrue="{!v.vfHost ne null || v.quickAction.type == 'Update'}">
+                        	<lightning:button variant="brand" label="{!$Label.c.qae_save}" title="{!$Label.c.qae_save}" onclick="{!c.handleSave}" />
+                        </aura:if>
+                    </footer>
+                    <aura:set attribute="else">
+                        <footer class="slds-modal__footer slds-grid_vertical">
+                            <aura:if isTrue="{!v.quickAction.type == 'Create'}">
+                                <div class="slds-col slds-p-top_small">
+                                    <lightning:button label="{!$Label.c.qae_saveAndNew}" title="{!$Label.c.qae_saveAndNew}" onclick="{!c.handleSaveAndNew}" class="qae_mobileButton slds-m-top_small" />
+                                </div>
+                            </aura:if>
+                            <div class="slds-col slds-p-top_small">
+                                <lightning:button variant="brand" label="{!$Label.c.qae_save}" title="{!$Label.c.qae_save}" onclick="{!c.handleSave}" class="qae_mobileButton slds-m-top_small" />
+                            </div>
+                        </footer>
+                    </aura:set>
+                </aura:if>
+                <!-- End body -->
+            </div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!v.quickAction.type eq 'Update' &amp;&amp; v.type eq 'relatedList' &amp;&amp; !v.showNext}"> 
+        <div class="qae_container slds-p-around_small" style="{! or(v.userThemeDisplayed == 'Theme3', vfHost == undefined) ? '' : 'position: absolute;'}">
+            <div class="qae_component">
+                <!-- Begin header -->
+                <div class="slds-page-header">
+                    <div class="slds-page-header__row">
+                        <div class="slds-page-header__col-title">
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <aura:iteration items="{!v.quickAction.colors}" var="color">
+                                        <aura:if isTrue="{!color.theme == 'theme4'}">
+                                            <img src="{!v.quickAction.icons[0].url}" style="{!'background-color: #' + color.color}" class="qae_icon"/>
+                                        </aura:if>
+                                    </aura:iteration>
+                                </div>
+                                <div class="slds-media__body">
+                                    <div class="slds-page-header__name">
+                                        <div class="slds-page-header__name-title">
+                                            <h1>
+                                                <span class="slds-page-header__title slds-truncate">{!v.quickAction.label}</span>
+                                            </h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-p-left_small slds-p-right_small">
+                            <aura:if isTrue="{!$Browser.formFactor ne 'PHONE' &amp;&amp; v.vfHost ne null}">
+                                <div class="slds-p-right_small">
+                                    <lightning:button label="{!$Label.c.qae_cancel}" title="{!$Label.c.qae_cancel}" onclick="{!c.handleCancel}"/>
+                                </div>
+                            </aura:if>
+                            <div>
+                                <lightning:button variant="brand" label="{!$Label.c.qae_next}" title="{!$Label.c.qae_next}" onclick="{!c.handleNext}"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <aura:if isTrue="{!$Browser.formFactor ne 'PHONE'}">
+                	<lightning:datatable columns="{!v.columns}" data="{!v.records}" keyField="Id" onrowselection="{!c.updateSelection}"/>
+                    <aura:set attribute="else">
+                    	<aura:iteration items="{!v.records}" var="record">
+                            <c:quickActionsEverywhere_mobileTile record="{!record}" columns="{!v.columns}" />
+                        </aura:iteration>
+                    </aura:set>
+                </aura:if>
+            </div>
+        </div>
+    </aura:if>
+    <aura:if isTrue="{!and(not(v.loading), not(v.recordTypeAvailable))}">
+        <c:qae_toast message="{!$Label.c.qae_recordTypeError}" />
+    </aura:if>
+    <aura:if isTrue="{!and(v.quickAction.type == 'LightningComponent', v.lightningComponent.length gt 0)}">
+        {!v.lightningComponent}
+    </aura:if>
+    <aura:if isTrue="{!and(v.quickAction.type == 'LightningComponent', v.lightningComponent.length eq 0)}">
+        <c:qae_toast message="{!$Label.c.qae_lightningComponentError}" /> 
+    </aura:if>
+    <aura:if isTrue="{!v.quickAction.type == 'VisualforcePage'}">
+        <iframe src="{!v.quickAction.visualforcePageUrl}" style="width: 100%;" height="{!v.quickAction.height}"/>
+    </aura:if>
+    <aura:if isTrue="{!and(v.flowDevName ne '', not(v.loading))}">
+    	<lightning:flow aura:id="flowData" onstatuschange="{!c.flowStatusChange}" />
+    </aura:if>
+</aura:component>

@@ -1,0 +1,23 @@
+<aura:component >
+    <aura:attribute name="message" type="string" />
+    <aura:attribute name="showClose" type="boolean" />
+    
+    <div class="slds-notify_container slds-is-relative">
+        <div class="slds-notify slds-notify_toast slds-theme_error" role="status">
+            <span class="slds-assistive-text">error</span>
+            <span class="slds-icon_container slds-icon-utility-error slds-m-right_small slds-no-flex slds-align-top" >
+                <lightning:icon iconName="utility:error" variant="bare" />
+            </span>
+            <div class="slds-notify__content">
+                <h2 class="slds-text-heading_small ">{!v.message}</h2>
+            </div>
+            <aura:if isTrue="{!v.showClose}">
+                <div class="slds-notify__close">
+                    <button class="slds-button slds-button_icon slds-button_icon-inverse" title="Close">
+                        <lightning:icon iconName="utility:close" variant="bare" />
+                    </button>
+                </div>
+            </aura:if>
+        </div>
+    </div>
+</aura:component>
