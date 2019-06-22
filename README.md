@@ -3,6 +3,7 @@
 Table of contents:
 
 * [Background](#Background)
+* [Supports](#Supports)
 * [Installation](#Installation)
 * [Parameters](#Parameters)
 * [FAQ](#FAQ)
@@ -14,11 +15,21 @@ This is a library for pushing quick actions everywhere in Salesforce (except for
 
 Because I've migrated to lightning and because your action bar can quickly get overloaded, I wanted to find a solution and keep context for end users to operate within their related lists.  Given that Lightning Out allows for buttons to exist in classic and Lightning, this was the solution for me.  I know I'm not alone and there is an idea with a sizable amount of points to it here:
 
-* [Allow quick action on related lists - 13,950+ points and counting](https://success.salesforce.com/ideaView?id=0873A0000003TXFQA2)
-* [Quick Action Should Redirect to Created Record - 2,200+ points](https://success.salesforce.com/ideaView?id=0873A000000lFe8QAE)
+* [Allow quick action on related lists - 14,150+](https://success.salesforce.com/ideaView?id=0873A0000003TXFQA2)
+* [Allow Custom Actions to display as Buttons on Cases (Feed-Based Layout) - 2,700+](https://success.salesforce.com/ideaView?id=0873A000000lKBBQA2)
+* [Quick Action Should Redirect to Created Record - 2,250+ points](https://success.salesforce.com/ideaView?id=0873A000000lFe8QAE)
 * [Support ability to open a custom quick action from a custom Lightning component - 1,450+](https://success.salesforce.com/ideaView?id=0873A000000CPOHQA4)
 
 We have all the tools to succeed, we just have to put the pieces together in the right way.  Hopefully, this repo is a start at deceiphering that puzzle.
+
+Supports
+========
+1. Related List Quick Actions
+2. Quick Actions in Lightning Pages
+3. Quick Actions in Community Record Pages and Pages
+4. Flows in related lists or buttons with redirection
+5. Quick Actions in Buttons (as opposed to feed)
+6. Classic, Mobile and of course, Lightning Experience
 
 Pre-Installation
 ===============
@@ -60,7 +71,7 @@ Parameters
 
 | Parameter                      | Description                                                                                                                                                                                                                  |
 |--------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| relatedId                      | Id of the record that is related to the quick action |
+| relatedId                      | Id of the record that is related to the quick action - If in community context, you must pass in {!recordId} in the component for a record page. |
 | relatedField                   | The field which is related to the quick action|
 | action                         | API Name of the quick action.  Example: Contact.Create_Contact.  For Global actions, only the API name need be entered, ex NewTask|
 | title                          | Display title of the quick action.|

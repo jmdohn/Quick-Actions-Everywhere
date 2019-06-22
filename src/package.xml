@@ -34,10 +34,6 @@
     <members>quickActionsEverywhere</members>
   </types>
   <types>
-    <name>Profile</name>
-    <members>Admin</members>
-  </types>
-  <types>
     <name>StaticResource</name>
     <members>DataCache</members>
     <members>qaeFlow</members>

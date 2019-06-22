@@ -36,6 +36,7 @@
     },
     setSearchLabel : function(component, helper){
         var quickAction = component.get("v.quickActionField");
+        var keyPrefix = window.DataCache.getData("qae_Keyprefix");
         var quickActionObjectType = component.get("v.quickActionObjectType");
         //console.log("Begin search for field label", quickAction.layoutComponents[0].details.name, quickAction.layoutComponents[0].details.value);
         if(!quickAction.layoutComponents[0].details.hasOwnProperty("searchReferenceTo")){
@@ -46,15 +47,31 @@
             }
         }
         
-        var searchRecords = component.get("c.retrieveThisRecordValues");
-        searchRecords.setParams({"obj" : quickAction.layoutComponents[0].details.searchReferenceTo, "searchValue" : quickAction.layoutComponents[0].details.value});
+        var searchRecords = component.get("c.retrieveThisRecordValues");    
+        var keyPrefixRec = quickAction.layoutComponents[0].details.value.substring(0,3);
+        var obj;
+        if(keyPrefix && keyPrefix.hasOwnProperty(keyPrefixRec)){
+            obj = keyPrefix[keyPrefixRec].object;
+            if(keyPrefix[keyPrefixRec].object === "Case"){
+                searchRecords.setParams({"obj" : obj, "searchValue" : quickAction.layoutComponents[0].details.value, "fieldList": "Id,CaseNumber"});
+            } else{
+                searchRecords.setParams({"obj" : obj, "searchValue" : quickAction.layoutComponents[0].details.value});
+            }
+        } else {
+            obj = quickAction.layoutComponents[0].details.referenceTo[0];
+            searchRecords.setParams({"obj" : obj, "searchValue" : quickAction.layoutComponents[0].details.value});
+        }
         var searchRecordsPromise = helper.executeAction(component, searchRecords);
         searchRecordsPromise.then(
             $A.getCallback(function(result){
                 if(result != undefined){
                     var searchResult = JSON.parse(result);
                     if(searchResult.result !== undefined && searchResult.result[0] !== undefined){
-                        quickAction.layoutComponents[0].details.searchLabel = searchResult.result[0].Name;
+                        if(obj !== "Case"){
+                           quickAction.layoutComponents[0].details.searchLabel = searchResult.result[0].Name; 
+                        } else{
+                           quickAction.layoutComponents[0].details.searchLabel = searchResult.result[0].CaseNumber;
+                        }
                     }
                     component.set("v.quickActionField", quickAction);
                 }

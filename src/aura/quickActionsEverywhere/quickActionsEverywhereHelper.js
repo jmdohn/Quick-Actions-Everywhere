@@ -410,7 +410,7 @@
                                         thisRecord[cmp.details.name] = value;
                                     }
                                 } else if(cmp.details.type === 'boolean'){
-                                    console.log(defaultValues[cmp.value]);
+                                    //console.log(defaultValues[cmp.value]);
                                     cmp.details.value = value;  
                                     thisRecord[cmp.details.name] = value;
                                 } else {

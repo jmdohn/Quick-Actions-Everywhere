@@ -29,7 +29,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
-<aura:component access="global" implements="force:hasRecordId,flexipage:availableForAllPageTypes" extends="c:qae_extensible" >
+<aura:component access="global" implements="force:hasRecordId,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes" extends="c:qae_extensible" >
     
     <ltng:require scripts="{!$Resource.DataCache}" afterScriptsLoaded="{!c.doInit}" />
     <aura:handler name="updateRecord" event="c:qae_UpdateRecord" action="{!c.handleUpdateEvent}"/>

@@ -4,4 +4,5 @@
     <design:attribute name="action" label="Quick Action API Name" description="API Name of the quick action.  Example: Contact.Create_Contact.  For Global actions, only the API name need be entered, ex NewTask"/>
 	<design:attribute name="type" label="Type" description="If this is a quick action or a related list quick action" datasource="quickAction,relatedList" default="quickAction" />
     <design:attribute name="fields" label="Fields" description="If this is a related list quick action, this is a comma-delimited list (case-sensitive) of fields to display for selection" />
+    <design:attribute name="relatedId" label="relatedId" description="Salesforce Id of the record - set in communities with {!recordId} as the attribute" />
 </design:component>
