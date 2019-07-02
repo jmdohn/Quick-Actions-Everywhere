@@ -361,11 +361,11 @@ public with sharing class quickActionsEverywhereController {
                                         sObjToCommit.put(s, fieldsToValue.get(s));
                 } else if(s == 'Id'){
                     sObjToCommit.put('Id', fieldsToValue.get('Id'));
-                }
-                if(odr.get(obj).fields.containsKey(s) && odr.get(obj).fields.get(s).createable && quickActionType == 'Create'){
+                } else if(odr.get(obj).fields.containsKey(s) && odr.get(obj).fields.get(s).createable  && quickActionType != 'Update'){
                                         sObjToCommit.put(s, fieldsToValue.get(s));
                 }
             }
+            system.debug(sobjToCommit);
             sObjList.add(sobjToCommit);
             system.debug('Object Describe Result ' + odr);
             system.debug('serializedSobject ' + sobjSerialized);

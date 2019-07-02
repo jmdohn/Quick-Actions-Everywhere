@@ -2,8 +2,12 @@
     "orgName": "Demo Company",
     "edition": "Enterprise",
 	"hasSampleData" : true,
-    "orgPreferences" : {
-        "enabled": ["S1DesktopEnabled", "ChatterEnabled", "EnhancedEmailEnabled"]
+     "settings": {
+        "orgPreferenceSettings": {
+            "s1DesktopEnabled": true,
+            "chatterEnabled": true,
+            "enhancedEmailEnabled": true
+        }
     },
 	"features" : ["LightningSalesConsole", "StateAndCountryPicklist"]
 }
