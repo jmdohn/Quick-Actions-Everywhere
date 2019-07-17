@@ -35,7 +35,7 @@ Pre-Installation
 ===============
 
 1. Pull down the repository to your machine.
-2. Use sfdx force:source:deploy -u [your org alias] force-app\main
+2. Use sfdx force:source:deploy -u [your org alias] -p force-app\main
 
 Note: This app does require a platform cache.  This is used to retrieve various sets of metadata to improve performance.  If you have an existing platform cache you would like to utilize, you will have to modify the code.  As always, test in a sandbox!
 
