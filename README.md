@@ -6,6 +6,7 @@ Table of contents:
 * [Supports](#Supports)
 * [Installation](#Installation)
 * [Parameters](#Parameters)
+* [Examples](#Examples)
 * [FAQ](#FAQ)
 * [Shout outs](#Shout-outs)
 
@@ -79,6 +80,58 @@ Parameters
 | flowDevName			         | Flow developer name. This is only exposed for button actions.   If you want to use a flow in lightning pages, use the standard flow component. Flows will redirect to the recordId variable. You may update the recordId variable via assignment to choose where to redirect based on use case.|
 | type                           | Type of action - either "relatedList" or "quickAction".|
 | fields                         | If type is "relatedList" specify the fields to display as columns.|
+
+Examples
+========
+
+## Video setup example
+[![Quick Actions Everywhere Setup Video](https://i.ytimg.com/vi/Tpf4Nn2_jIs/hqdefault.jpg?sqp=-oaymwEZCPYBEIoBSFXyq4qpAwsIARUAAIhCGAFwAQ==&rs=AOn4CLCxhGJw-G2xYS3a6J4nd9RtZgvKug=400x400)](https://youtu.be/Tpf4Nn2_jIs)
+
+## Related List Button Example
+1. Create a related list button that displays in existing window without sidebar or header and enter the following:<br/>
+/apex/quickActionsEverywhere?action=LogACall&relatedId={!Account.Id}&relatedField=WhatId&title=Log A Call<br/>
+2. Add to Task Related List.<br/>
+
+Breakdown of components:
+
+| Parameter                    | Description                                                                                      |
+|------------------------------|--------------------------------------------------------------------------------------------------|
+| /apex/quickActionsEverywhere | Base of all URLs for this library                                                                |
+| action=LogACall              | This means that this is referencing a global action.                                             |
+| relatedId={!Account.Id}      | This is the related account which we are going to pipe into the quick action.                    |
+| relatedField=WhatId          | The field that we are going to update with the "relatedId" paramete                              |
+| title=Log                    | What to name the title of the visualforce page.  This is especially important for console users. |
+
+## Related List Update Button Example
+1. Create a related list button that displays in existing window without sidebar or header and enter the following:<br/>
+/apex/quickActionsEverywhere?action=Task.EditDescription&relatedId={!Account.Id}&type=relatedList&fields=Subject,Description,ActivityDate&title=Edit Comments<br/>
+2. Add to Task Related List.<br/>
+
+Breakdown of components:
+
+| Parameter                               | Description                                                                                      |
+|-----------------------------------------|--------------------------------------------------------------------------------------------------|
+| /apex/quickActionsEverywhere            | Base of all URLs for this library                                                                |
+| action=Task.EditDescription             | API Name of the task.                                                                            |
+| relatedId={!Account.Id}                 | This is the related account which we are going to pipe into the quick action.                    |
+| type=relatedList                        | Type of quick action to display.  This is a related list component to show update actions.       |
+| fields=Subject,Description,ActivityDate | Fields to display from the related records to display for selection.                             |
+| title=Edit Comment                      | What to name the title of the visualforce page.  This is especially important for console users. |
+
+## Flow Example
+1. Create a flow that creates a contact called "Create Contact".
+2. Create a related list button that displays in existing window without sidebar or header and enter the following:<br/>
+/apex/quickActionsEverywhere?relatedId={!Account.Id}&flowDevName=Create_Contact&title=Create Contact<br/>
+3. Add to Contact Related List.<br/>
+
+Breakdown of components:
+
+| Parameter                    | Description                                                                                      |
+|------------------------------|--------------------------------------------------------------------------------------------------|
+| /apex/quickActionsEverywhere | Base of all URLs for this library                                                                |
+| relatedId={!Account.Id}      | This is the related account which we are going to pipe into the quick action.                    |
+| flowDevName=Create_Contact   | The developer name for the flow.                                                                 |
+| title=Create Contact         | What to name the title of the visualforce page.  This is especially important for console users. |
 
 FAQ
 ===
