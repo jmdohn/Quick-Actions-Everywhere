@@ -16,10 +16,10 @@ This is a library for pushing quick actions everywhere in Salesforce (except for
 
 Because I've migrated to lightning and because your action bar can quickly get overloaded, I wanted to find a solution and keep context for end users to operate within their related lists.  Given that Lightning Out allows for buttons to exist in classic and Lightning, this was the solution for me.  I know I'm not alone and there is an idea with a sizable amount of points to it here:
 
-* [Allow quick action on related lists - 14,150+](https://success.salesforce.com/ideaView?id=0873A0000003TXFQA2)
-* [Allow Custom Actions to display as Buttons on Cases (Feed-Based Layout) - 2,700+](https://success.salesforce.com/ideaView?id=0873A000000lKBBQA2)
-* [Quick Action Should Redirect to Created Record - 2,250+ points](https://success.salesforce.com/ideaView?id=0873A000000lFe8QAE)
-* [Support ability to open a custom quick action from a custom Lightning component - 1,450+](https://success.salesforce.com/ideaView?id=0873A000000CPOHQA4)
+* [Allow quick action on related lists - 16,250+](https://success.salesforce.com/ideaView?id=0873A0000003TXFQA2)
+* [Allow Custom Actions to display as Buttons on Cases (Feed-Based Layout) - 3,300+](https://success.salesforce.com/ideaView?id=0873A000000lKBBQA2)
+* [Quick Action Should Redirect to Created Record - 2,850+ points](https://success.salesforce.com/ideaView?id=0873A000000lFe8QAE)
+* [Support ability to open a custom quick action from a custom Lightning component - 1,500+](https://success.salesforce.com/ideaView?id=0873A000000CPOHQA4)
 
 We have all the tools to succeed, we just have to put the pieces together in the right way.  Hopefully, this repo is a start at deceiphering that puzzle.
 

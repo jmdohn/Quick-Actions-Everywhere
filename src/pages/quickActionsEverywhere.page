@@ -1,6 +1,6 @@
 <apex:page showHeader="true" sidebar="true" title="{!$CurrentPage.parameters.title}" controller="quickActionsEverywhereController">
         <apex:slds />
-        <apex:stylesheet value="{!IF($CurrentPage.parameters.flowDevName != null, $Resource.qaeFlow, '')}"/>
+    	<apex:stylesheet value="{!IF($CurrentPage.parameters.flowDevName != null, $Resource.qaeFlow, '')}"/>
         <apex:form >
             <apex:actionFunction name="redirectToValue" action="{!redirect}" reRender="false">
                 <apex:param name="value" value=""/>
@@ -91,7 +91,7 @@
                                 console.log(event);
                                 if(result.errorMsg != null && result.errorMsg != undefined){
                                     var div = document.getElementById("errorDML");
-                                    div.style.display="";
+                        			div.style.display="";
                                     document.getElementById("errorValue").innerHTML = result.errorMsg;
                                 } else if("{!$CurrentPage.parameters.relatedId}" !== undefined){
                                     redirectToValue("{! RIGHT( $CurrentPage.URL,(LEN( $CurrentPage.URL)-FIND('/apex', $CurrentPage.URL)))}");
@@ -103,7 +103,6 @@
                         );
                     }
                     if(data.redirectAction =="save"){
-                    console.log(JSON.stringify(data.data));
                         Visualforce.remoting.Manager.invokeAction(
                             '{!$RemoteAction.quickActionsEverywhereController.saveThisRecord}',
                             data.data.attributes.type, JSON.stringify(data.data), "{!$CurrentPage.parameters.relatedId}", data.quickActionType,
@@ -111,10 +110,9 @@
                                 console.log(result);
                                 console.log(event);
                                 console.log(result.saveResult[0].id, data.redirectValue);
-                                console.log(JSON.stringify(result));
                                 if(result.errorMsg != null && result.errorMsg != undefined){
                                     var div = document.getElementById("errorDML");
-                                    div.style.display="";
+                        			div.style.display="";
                                     document.getElementById("errorValue").innerHTML = result.errorMsg;
                                 } else if( data.selectedRecordsLength <= 1){
                                     if("{!$CurrentPage.parameters.relatedId}" !== undefined && data.redirectValue !== 'child'){
