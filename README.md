@@ -40,6 +40,13 @@ Pre-Installation
 
 Note: This app does require a platform cache.  This is used to retrieve various sets of metadata to improve performance.  If you have an existing platform cache you would like to utilize, you will have to modify the code.  As always, test in a sandbox!
 
+Too much work? Now enjoy the Deploy to Salesforce button!
+
+<a href="https://githubsfdeploy.herokuapp.com?owner=jmdohn&repo=Quick-Actions-Everywhere&ref=999a8eedf3a0940b01ed662b207e4b2b8dd3d0ec">
+  <img alt="Deploy to Salesforce"
+       src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
+</a>
+
 # Post-deployment (You must perform these or the app will not work):
 1. Navigate to Auth Providers and create the qae_REST_API auth provider. Use values:
 	* Provider Type: Salesforce
