@@ -231,6 +231,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
         <iframe src="{!v.quickAction.visualforcePageUrl}" style="width: 100%;" height="{!v.quickAction.height}"/>
     </aura:if>
     <aura:if isTrue="{!and(v.flowDevName ne '', not(v.loading))}">
-    	<lightning:flow aura:id="flowData" onstatuschange="{!c.flowStatusChange}" />
+    	<div class="qae_Flow">
+            <lightning:flow aura:id="flowData" onstatuschange="{!c.flowStatusChange}" />
+        </div>
     </aura:if>
 </aura:component>

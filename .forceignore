@@ -8,4 +8,6 @@ qae_REST_API.authprovider
 qae_REST_API.connectedApp
 qae_REST_API.namedCredential
 Security.settings
+Admin.profile
+Trail Customer Portal User.profile
 #Customer Portal.portal

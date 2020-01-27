@@ -50,7 +50,9 @@
                 break;
             }
         }
-        if(event.getParam("status") === "FINISHED"){
+        if(event.getParam("status") === "FINISHED" || event.getParam("status") === "FINISHED_SCREEN"){
+            var flowComponent = component.find("flowData");
+            flowComponent.destroy();
             helper.sendToVF(component, event, helper, redirectVariable);
         }
     },

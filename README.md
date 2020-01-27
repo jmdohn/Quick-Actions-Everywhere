@@ -42,7 +42,7 @@ Note: This app does require a platform cache.  This is used to retrieve various 
 
 Too much work? Now enjoy the Deploy to Salesforce button!
 
-<a href="https://githubsfdeploy.herokuapp.com?owner=jmdohn&repo=Quick-Actions-Everywhere&ref=999a8eedf3a0940b01ed662b207e4b2b8dd3d0ec">
+<a href="https://githubsfdeploy.herokuapp.com?owner=jmdohn&repo=Quick-Actions-Everywhere&ref=a0d23cfa9374126e608df0372e4fafaa67ae4a6d">
   <img alt="Deploy to Salesforce"
        src="https://raw.githubusercontent.com/afawcett/githubsfdeploy/master/deploy.png">
 </a>

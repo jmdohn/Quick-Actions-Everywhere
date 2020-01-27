@@ -3,3 +3,4 @@ managed-src
 force-app-test
 .sfdx
 testIssue
+.vscode
