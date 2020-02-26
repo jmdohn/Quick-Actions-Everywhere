@@ -451,13 +451,16 @@
                         }
                         
                         // Get the icon
-                        for(var i = 0; i < iconDescribeResult.themeItems[c].icons.length; i ++){
-                            if(iconDescribeResult.themeItems[c].icons[i].theme === "theme4" && iconDescribeResult.themeItems[c].icons[i].contentType === "image/svg+xml"){
-                                finalResult[iconDescribeResult.themeItems[c].name] = {icon : iconDescribeResult.themeItems[c].icons[i]};
-                                found = true;
-                                break;
+                        if(iconDescribeResult.themeItems[c].icons !== null){
+                            for(var i = 0; i < iconDescribeResult.themeItems[c].icons.length; i ++){
+                                if(iconDescribeResult.themeItems[c].icons[i].theme === "theme4" && iconDescribeResult.themeItems[c].icons[i].contentType === "image/svg+xml"){
+                                    finalResult[iconDescribeResult.themeItems[c].name] = {icon : iconDescribeResult.themeItems[c].icons[i]};
+                                    found = true;
+                                    break;
+                                }
                             }
                         }
+                        
                         
                         // Go to the next record.  We don't want to show this if its not a LEX enabled object
                         if(!found){
@@ -465,10 +468,12 @@
                         }
                         
                         // Get the color for the icon
-                        for(var i = 0; i < iconDescribeResult.themeItems[c].colors.length; i ++){
-                            if(iconDescribeResult.themeItems[c].colors[i].theme === "theme4"){
-                                finalResult[iconDescribeResult.themeItems[c].name].color = iconDescribeResult.themeItems[c].colors[i];
-                                break;
+                        if(iconDescribeResult.themeItems[c].colors !== null){
+                            for(var i = 0; i < iconDescribeResult.themeItems[c].colors.length; i ++){
+                                if(iconDescribeResult.themeItems[c].colors[i].theme === "theme4"){
+                                    finalResult[iconDescribeResult.themeItems[c].name].color = iconDescribeResult.themeItems[c].colors[i];
+                                    break;
+                                }
                             }
                         }
                     }

@@ -1,16 +1,16 @@
 ({
     initialize : function(component, event, helper){
-      	var action = component.get("v.action");
+        var action = component.get("v.action");
         var flowDevName = component.get("v.flowDevName");
         
         // Populate the record Id if used from a record page
-		var relatedId = component.get("v.relatedId");
+        var relatedId = component.get("v.relatedId");
         var recordId = component.get("v.recordId");
         if(relatedId === undefined && recordId !== undefined){
-        	component.set("v.relatedId", recordId);
+            component.set("v.relatedId", recordId);
         }        
         //console.log("Related Id", component.get("v.relatedId"));
-		
+        
         if(flowDevName === ""){
             // Get the quick action
             var quickActions = component.get("c.describeAvailableQuickAction");
@@ -451,13 +451,16 @@
                         }
                         
                         // Get the icon
-                        for(var i = 0; i < iconDescribeResult.themeItems[c].icons.length; i ++){
-                            if(iconDescribeResult.themeItems[c].icons[i].theme === "theme4" && iconDescribeResult.themeItems[c].icons[i].contentType === "image/svg+xml"){
-                                finalResult[iconDescribeResult.themeItems[c].name] = {icon : iconDescribeResult.themeItems[c].icons[i]};
-                                found = true;
-                                break;
+                        if(iconDescribeResult.themeItems[c].icons !== null){
+                            for(var i = 0; i < iconDescribeResult.themeItems[c].icons.length; i ++){
+                                if(iconDescribeResult.themeItems[c].icons[i].theme === "theme4" && iconDescribeResult.themeItems[c].icons[i].contentType === "image/svg+xml"){
+                                    finalResult[iconDescribeResult.themeItems[c].name] = {icon : iconDescribeResult.themeItems[c].icons[i]};
+                                    found = true;
+                                    break;
+                                }
                             }
                         }
+                        
                         
                         // Go to the next record.  We don't want to show this if its not a LEX enabled object
                         if(!found){
@@ -465,10 +468,12 @@
                         }
                         
                         // Get the color for the icon
-                        for(var i = 0; i < iconDescribeResult.themeItems[c].colors.length; i ++){
-                            if(iconDescribeResult.themeItems[c].colors[i].theme === "theme4"){
-                                finalResult[iconDescribeResult.themeItems[c].name].color = iconDescribeResult.themeItems[c].colors[i];
-                                break;
+                        if(iconDescribeResult.themeItems[c].colors !== null){
+                            for(var i = 0; i < iconDescribeResult.themeItems[c].colors.length; i ++){
+                                if(iconDescribeResult.themeItems[c].colors[i].theme === "theme4"){
+                                    finalResult[iconDescribeResult.themeItems[c].name].color = iconDescribeResult.themeItems[c].colors[i];
+                                    break;
+                                }
                             }
                         }
                     }
@@ -504,11 +509,11 @@
        )
     },
     queryRelatedRecords : function(component, event, helper, quickAction, objectDescribe){
-		console.log('query related records');        
+        console.log('query related records');        
         var queryRelatedRecordAction = component.get("c.retrieveRelatedRecords");
         queryRelatedRecordAction.setParams({"searchValue" : component.get("v.relatedId"), "obj" : quickAction.targetSobjectType, "relatedField" : component.get("v.relatedField"), "fieldList" : component.get("v.fields")});
         var queryRelatedRecordActionPromise = helper.executeAction(component, queryRelatedRecordAction);
-		queryRelatedRecordActionPromise.then(
+        queryRelatedRecordActionPromise.then(
             $A.getCallback(function(result){
                 var res = JSON.parse(result);
                 //console.log(res);
@@ -563,7 +568,7 @@
            item.checkValidity(); 
         });
         //console.log("hasError", hasError);
-		component.set("v.hasError", hasError);
+        component.set("v.hasError", hasError);
         return hasError;
     }
 })
